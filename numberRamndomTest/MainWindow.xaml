@@ -1,0 +1,18 @@
+﻿<Window x:Class="numberRamndomTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:numberRamndomTest"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button Content="Cargar Archivo" HorizontalAlignment="Left" Height="32" Margin="25,24,0,0" VerticalAlignment="Top" Width="85" Click="Load_File" />
+        <Button Content="Prueba de Medias" HorizontalAlignment="Left" Margin="25,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Means"/>
+        <Button Content="Prueba de Varianza" HorizontalAlignment="Left" Margin="30,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Variance"/>
+        <Button Content="Prueba de CHi2" HorizontalAlignment="Left" Margin="36,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_CHI_Square"/>
+        <Button Content="Prueba KS" HorizontalAlignment="Left" Margin="36,217,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_KS"/>
+        <Button Content="Prueba de Poker" HorizontalAlignment="Left" Margin="26,110,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Poker"/>
+
+    </Grid>
+</Window>
