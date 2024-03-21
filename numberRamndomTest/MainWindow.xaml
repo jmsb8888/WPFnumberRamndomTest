@@ -7,12 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Cargar Archivo" HorizontalAlignment="Left" Height="32" Margin="25,24,0,0" VerticalAlignment="Top" Width="85" Click="Load_File" />
-        <Button Content="Prueba de Medias" HorizontalAlignment="Left" Margin="25,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Means"/>
-        <Button Content="Prueba de Varianza" HorizontalAlignment="Left" Margin="30,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Variance"/>
-        <Button Content="Prueba de CHi2" HorizontalAlignment="Left" Margin="36,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_CHI_Square"/>
-        <Button Content="Prueba KS" HorizontalAlignment="Left" Margin="36,217,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_KS"/>
-        <Button Content="Prueba de Poker" HorizontalAlignment="Left" Margin="26,110,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Poker"/>
+        <Button Content="Cargar Archivo" Name="btnLoad" HorizontalAlignment="Left" Height="32" Margin="25,24,0,0" VerticalAlignment="Top" Width="85" Click="Load_File" />
+        <Button Content="Realizar Todas las Pruebas" Name="btnAll" HorizontalAlignment="Left" Height="32" Margin="25,256,0,0" VerticalAlignment="Top" Width="85" Click="All_Test" />
+        <Button Content="Prueba de Medias" Name="btnMeans" HorizontalAlignment="Left" Margin="25,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Means"/>
+        <Button Content="Prueba de Varianza" Name="btnVar" HorizontalAlignment="Left" Margin="30,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Variance"/>
+        <Button Content="Prueba de CHi2" Name="btnCHI" HorizontalAlignment="Left" Margin="36,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_CHI_Square"/>
+        <Button Content="Prueba KS" Name ="btnKS" HorizontalAlignment="Left" Margin="36,217,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_KS"/>
+        <Button Content="Prueba de Poker" Name ="btnPoker" HorizontalAlignment="Left" Margin="26,110,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Poker"/>
+        <Button Content="Iniciar Prueba" Name="btnStart" HorizontalAlignment="Left" Margin="25,293,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Start_Test"/>
 
     </Grid>
 </Window>
