@@ -23,19 +23,22 @@ namespace ModelRandomTest
 
         public List<double> ReadCsvFile()
         {
-            System.IO.StreamReader file = new StreamReader(this.filePath);
-            string delimiter = "\n";
-            string line;
-            while((line = file.ReadLine()) != null) 
+            using (TextFieldParser parser = new TextFieldParser(this.filePath))
             {
-                string[] fila = line.Split(delimiter);
-                foreach(string s in fila)
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(";");
+
+                while (!parser.EndOfData)
                 {
-                    double aux = double.Parse(s);
-                    data.Add(aux);
+                    string[] fila = parser.ReadFields();
+                    foreach (string s in fila)
+                    {
+                        double aux = double.Parse(s.Replace('.', ','));
+                        data.Add(aux);
+                    }
                 }
-                 
             }
+
             return data;
         }
     }
