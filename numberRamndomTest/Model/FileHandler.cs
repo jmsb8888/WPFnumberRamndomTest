@@ -2,6 +2,7 @@
 using NotVisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace ModelRandomTest
 
         public List<double> ReadCsvFile()
         {
+            List<double> data = new List<double>();
             using (TextFieldParser parser = new TextFieldParser(this.filePath))
             {
                 parser.TextFieldType = FieldType.Delimited;
@@ -33,7 +35,7 @@ namespace ModelRandomTest
                     string[] fila = parser.ReadFields();
                     foreach (string s in fila)
                     {
-                        double aux = double.Parse(s.Replace('.', ','));
+                        double aux = double.Parse(s, CultureInfo.InvariantCulture);
                         data.Add(aux);
                     }
                 }

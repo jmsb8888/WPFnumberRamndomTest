@@ -11,6 +11,7 @@ namespace ModelRandomTest
     internal class MeanTest
     {
         List<double> RiData;
+        Dictionary<string, double> ResultData = new Dictionary<string, double>();
         double EstimationError;
         public MeanTest(List<double> RiData, double EstimationError) {
             Console.WriteLine("Cantidad de dato00s " + RiData.Count);
@@ -18,7 +19,10 @@ namespace ModelRandomTest
             this.EstimationError = EstimationError;
 
         }
-
+        public Dictionary<string, double> GetResults()
+        {
+            return this.ResultData;
+        }
         public Boolean TakeTest()
         {
             Console.WriteLine("Cantidad de datos "+RiData.Count);    
@@ -29,6 +33,12 @@ namespace ModelRandomTest
             double upperLimit = (0.5) + (zValue * (1 / (Math.Sqrt(12 * RiData.Count))));
             Boolean isValid = average < upperLimit && average > lowerLimit;
 
+            ResultData.Add("Cantidad de datos: ",RiData.Count);
+            ResultData.Add("Media de los datos: ",average);
+            ResultData.Add("Valor para 1- (α/2): ", oneMinusMidpointAlphaValue);
+            ResultData.Add("Valor de z: ",zValue);
+            ResultData.Add("Limite inferior",lowerLimit);
+            ResultData.Add("Limite superior",upperLimit);
 
             Console.WriteLine(RiData.Count);
             Console.WriteLine("average: " + average + "\n");

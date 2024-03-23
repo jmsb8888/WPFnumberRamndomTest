@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace numberRamndomTest.Controller
 {
-    internal class Controller
+    internal class ControllerTest
     {
         readonly MeanTest meanTest;
         readonly VarianceTest varianceTest;
@@ -17,7 +17,8 @@ namespace numberRamndomTest.Controller
         readonly PokerTest pokerTest;
         string filePath;
         List<double> Data;
-        public Controller(string filePath, double EstimationError,int IntervalQuantity)
+        Dictionary<string, double> results;
+        public ControllerTest(string filePath, double EstimationError,int IntervalQuantity)
         {
             this.filePath = filePath;
             this.Data = CreateCsvFile();
@@ -28,7 +29,10 @@ namespace numberRamndomTest.Controller
             this.pokerTest = new PokerTest(Data, EstimationError);
             
         }
-
+        public Dictionary<string, double> GetResults()
+        {
+            return this.results;
+        }
         private List<double> CreateCsvFile()
         {
             try
@@ -44,11 +48,12 @@ namespace numberRamndomTest.Controller
             }
         }
 
-        private Boolean CreateMeanTest()
+        public Boolean CreateMeanTest()
         {
             try
             {
                 Boolean result = meanTest.TakeTest();
+                results = meanTest.GetResults();
                 return result;
             }
             catch (Exception ex)
@@ -57,11 +62,12 @@ namespace numberRamndomTest.Controller
                 return false;
             }
         }
-        private Boolean CreateVarianceTest()
+        public Boolean CreateVarianceTest()
         {
             try
             {
                 Boolean result = varianceTest.testVar();
+                results = meanTest.GetResults();
                 return result;
             }
             catch (Exception ex)
@@ -71,11 +77,12 @@ namespace numberRamndomTest.Controller
             }
         }
 
-        private Boolean CreateCHiSquareTest()
+        public Boolean CreateCHiSquareTest()
         {
             try
             {
                 Boolean result = chiSquaredTest.testChiSquarer();
+                results = meanTest.GetResults();
                 return result;
             }
             catch (Exception ex)
@@ -84,11 +91,12 @@ namespace numberRamndomTest.Controller
                 return false;
             }
         }
-        private Boolean CreateKSTest()
+        public Boolean CreateKSTest()
         {
             try
             {
                 Boolean result = ksTest.testKS();
+                results = meanTest.GetResults();
                 return result;
             }
             catch (Exception ex)
@@ -97,11 +105,12 @@ namespace numberRamndomTest.Controller
                 return false;
             }
         }
-        private Boolean CreatePokerTest()
+        public Boolean CreatePokerTest()
         {
             try
             {
                 Boolean result = pokerTest.testPoker();
+                results = meanTest.GetResults();
                 return result;
             }
             catch (Exception ex)

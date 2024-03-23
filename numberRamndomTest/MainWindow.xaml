@@ -15,6 +15,7 @@
         <Button Content="Prueba KS" Name ="btnKS" HorizontalAlignment="Left" Margin="36,217,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_KS"/>
         <Button Content="Prueba de Poker" Name ="btnPoker" HorizontalAlignment="Left" Margin="26,110,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Poker"/>
         <Button Content="Iniciar Prueba" Name="btnStart" HorizontalAlignment="Left" Margin="25,293,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Start_Test"/>
+        <TextBlock Name="TxtBlockResult" HorizontalAlignment="Left" Margin="379,84,0,0" TextWrapping="Wrap" Text="Resultados" VerticalAlignment="Top" Height="219" Width="296" FontWeight="Bold" FontStyle="Italic" Background="#FFE89F9F" />
 
     </Grid>
 </Window>

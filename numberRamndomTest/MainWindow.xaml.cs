@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using ModelRandomTest;
+using numberRamndomTest.Controller;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,7 +33,7 @@ namespace numberRamndomTest
             InitializeComponent();
             ActicateAndDeactivateAll();
         }
-        private void SetTestState(bool means, bool variance, bool chiSquare, bool ks, bool poker)
+       /* private void SetTestState(bool means, bool variance, bool chiSquare, bool ks, bool poker)
         {
             DoMeansTest = means;
             DoVarianceTest = variance;
@@ -49,7 +50,7 @@ namespace numberRamndomTest
             SetButtonState(btnPoker, DoPokerTest);
             SetButtonState(btnStart, isAddFile);
             SetButtonState(btnAll, DoAllTest);
-        }
+        }*/
          private void ActicateAndDeactivateAll()
         {
             btnMeans.IsEnabled = isAddFile;
@@ -63,12 +64,12 @@ namespace numberRamndomTest
         }
         private void SetButtonState(Button button, bool isEnabled)
         {
-            button.Background = isEnabled ? Brushes.Green : Brushes.Red;
+            button.Background = isEnabled ? Brushes.Green: null;
         }
         private void Load_File(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Archivos de texto (*.txt)|*.txt|Todos los archivos (*.*)|*.*";
+            openFileDialog.Filter = "Archivos CSV (*.csv)|*.csv|Todos los archivos (*.*)|*.*";
             bool? result = openFileDialog.ShowDialog();
           
             if (result == true)
@@ -84,37 +85,42 @@ namespace numberRamndomTest
         {
            
             DoMeansTest = !DoMeansTest;
-            SetTestState(DoMeansTest, false, false, false, false);
-            SelectAndDeselect();
+            SetButtonState(btnMeans, DoMeansTest);
+            /*SetTestState(DoMeansTest, false, false, false, false);
+            SelectAndDeselect();*/
 
         }
 
         private void Test_Variance(object sender, RoutedEventArgs e)
         {
             DoVarianceTest = !DoVarianceTest;
-            SetTestState(false, DoVarianceTest, false, false, false);
-            SelectAndDeselect();
+            /*SetTestState(false, DoVarianceTest, false, false, false);
+            SelectAndDeselect();*/
+            SetButtonState(btnVar, DoVarianceTest);
 
         }
 
         private void Test_CHI_Square(object sender, RoutedEventArgs e)
         {
             DoChiSquareTest = !DoChiSquareTest;
-            SetTestState(false, false, DoChiSquareTest, false, false);
-            SelectAndDeselect();
+            /*SetTestState(false, false, DoChiSquareTest, false, false);
+            SelectAndDeselect();*/
+            SetButtonState(btnCHI, DoChiSquareTest);
         }
 
         private void Test_KS(object sender, RoutedEventArgs e)
         {
             DoKSTest= !DoKSTest;
-            SetTestState(false, false, false, DoKSTest, false);
-            SelectAndDeselect();
+            /*SetTestState(false, false, false, DoKSTest, false);
+            SelectAndDeselect();*/
+            SetButtonState(btnKS, DoKSTest);
         }
         private void Test_Poker(object sender, RoutedEventArgs e)
         {
             DoPokerTest= !DoPokerTest;
-            SetTestState(false, false, false, false, DoPokerTest);
-            SelectAndDeselect();
+            /*SetTestState(false, false, false, false, DoPokerTest);
+            SelectAndDeselect();*/
+            SetButtonState(btnPoker, DoPokerTest);
         }
         private void All_Test(object sender, RoutedEventArgs e)
         {
@@ -124,10 +130,65 @@ namespace numberRamndomTest
             DoChiSquareTest = newValue;
             DoKSTest = newValue;
             DoPokerTest = newValue;
+
+            SetButtonState(btnMeans, DoMeansTest);
+            SetButtonState(btnVar, DoVarianceTest);
+            SetButtonState(btnCHI, DoChiSquareTest);
+            SetButtonState(btnKS, DoKSTest);
+            SetButtonState(btnPoker, DoPokerTest);
+            SetButtonState(btnStart, isAddFile);
+
         }
         private void Start_Test(object sender, RoutedEventArgs e)
         {
+            ControllerTest controller = new ControllerTest(filePath, 0.05, 100);
+            var tests = new Dictionary<string, Func<bool>>
+                {
+                    { "DoMeansTest", () => controller.CreateMeanTest() },
+                    { "DoVarianceTest", () => controller.CreateVarianceTest() },
+                    { "DoChiSquareTest", () => controller.CreateCHiSquareTest() },
+                    { "DoKSTest", () => controller.CreateKSTest() },
+                    { "DoPokerTest", () => controller.CreatePokerTest() }
+                };
 
+            var conditions = new Dictionary<string, bool>
+                {
+                    { "DoMeansTest", DoMeansTest },
+                    { "DoVarianceTest", DoVarianceTest },
+                    { "DoChiSquareTest", DoChiSquareTest },
+                    { "DoKSTest", DoKSTest },
+                    { "DoPokerTest", DoPokerTest }
+                };
+
+            ExecuteTest(conditions, tests, controller);
+        }
+
+        private void ExecuteTest(Dictionary<string, bool> conditions, Dictionary<string, Func<bool>> tests, ControllerTest controller)
+        {
+            foreach (var condition in conditions)
+            {
+                if (condition.Value && tests.TryGetValue(condition.Key, out var testAction))
+                {
+                    bool result = testAction();
+                    PrintResult(condition.Key, controller, result);
+                }
+            }
+        }
+        private void PrintResult(string nameTest, ControllerTest controller, bool resultTest)
+        {
+            Dictionary<string, double> result = controller.GetResults();
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(nameTest);
+            foreach (var pair in result)
+            {
+                sb.AppendLine($"Clave: {pair.Key}, Valor: {pair.Value}");
+            }
+            sb.AppendLine("resultado de la prueba: " + resultTest);
+            sb.AppendLine("");
+            sb.AppendLine("");
+            sb.AppendLine("");
+            TxtBlockResult.Text = sb.ToString();
         }
     }
 }
