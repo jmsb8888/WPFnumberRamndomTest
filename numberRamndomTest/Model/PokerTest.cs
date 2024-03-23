@@ -11,15 +11,20 @@ namespace ModelRandomTest
     {
         List<double> RiData = new List<double>();
         double EstimationError;
+        Dictionary<string, double> ResultData = new Dictionary<string, double>();
         public PokerTest(List<double> RiData, double EstimationError)
         {
             this.RiData = RiData;
             this.EstimationError = EstimationError;
         }
-
-        public Boolean testPoker()
+        public Dictionary<string, double> GetResults()
+        {
+            return this.ResultData;
+        }
+        public Boolean TestPoker()
         {
             Console.WriteLine("Cantidad de datos en prueba 1" + RiData.Count);
+
             List<string> stringNumbers = RiData.Select(x => x.ToString("F5")).ToList();
             List<int> listOfResults = CalculateHand(stringNumbers);
             List<double> Ei = CalculateEi();

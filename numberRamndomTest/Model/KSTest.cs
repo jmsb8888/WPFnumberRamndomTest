@@ -1,7 +1,11 @@
 ﻿using MathNet.Numerics.Statistics;
+using numberRamndomTest.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -13,11 +17,22 @@ namespace ModelRandomTest
         List<double> RiData = new List<double>();
         double EstimationError;
         int NumberIntervals;
+        Dictionary<string, double> ResultData = new Dictionary<string, double>();
+        ObservableCollection<FormatTableKS> FormatTableKS = new ObservableCollection<FormatTableKS>();
         public KSTest(List<double> RiData, double EstimationError, int NumberIntervals)
         {
             this.RiData = RiData;
             this.EstimationError = EstimationError;
             this.NumberIntervals = NumberIntervals;
+        }
+
+        public Dictionary<string, double> GetResults()
+        {
+            return this.ResultData;
+        }
+        public ObservableCollection<FormatTableKS> GetTableKS()
+        {
+            return this.FormatTableKS;
         }
         public Boolean testKS()
         {
@@ -27,7 +42,11 @@ namespace ModelRandomTest
             {
                 NumberIntervals = (int)Math.Ceiling((3.5 * Statistics.StandardDeviation(RiData)) / Math.Cbrt(RiData.Count));
             }
-            Dictionary<Tuple<double, double>, int> IntervalFrecuency = new Dictionary<Tuple<double, double>, int>();
+            ResultData.Add("Cantidad de datos: ", RiData.Count);
+            ResultData.Add("Cantidad de intervalos: ", NumberIntervals);
+            ResultData.Add("Dato minimo: ", minData);
+            ResultData.Add("Dato Maximo: ", maxData );
+            Dictionary<Tuple<double, double>, int> IntervalFrecuency;
             IntervalFrecuency = CalculateFrecuency(CreateIntervals(minData, maxData, NumberIntervals), NumberIntervals);
 
             List<double> cumulativeFrecuency = CalculateCumulativeFrecuency(IntervalFrecuency);
@@ -36,46 +55,29 @@ namespace ModelRandomTest
             List<double> ExpectedCumulativeProbability = CalculateExpectedCumulativeProbability(ExpectedCumulativeFrequency);
             List<double> ObservedDifference = CalculateObservedDifference(ExpectedCumulativeProbability, cumulativeProbability);
 
-            Console.WriteLine("IntervalFrecuency:");
-            foreach (var kvp in IntervalFrecuency)
+            int count = 0;
+            for (int i = 0; i < cumulativeFrecuency.Count; i++)
             {
-                Console.WriteLine($"Intervalo [{kvp.Key.Item1}, {kvp.Key.Item2}): {kvp.Value}");
+                KeyValuePair<Tuple<double, double>, int> par = IntervalFrecuency.ElementAt(i);
+                Tuple<double, double> interval = par.Key;
+                FormatTableKS newRow = new FormatTableKS
+                {
+                    Index = count++,
+                    Beginning = interval.Item1,
+                    End = interval.Item2,
+                    ObtainedFrequency = par.Value,
+                    AcomulatedObtainedFrecuency = cumulativeFrecuency[i],
+                    ObtainedProbability = cumulativeFrecuency[i],
+                    AcomulatedExpectedFrequency = ExpectedCumulativeFrequency[i],
+                    ExpectedProbability = ExpectedCumulativeProbability[i],
+                    Difference = ObservedDifference[i],
+                };
+                FormatTableKS.Add(newRow);
             }
-
-            Console.WriteLine("\nFrecuenciaAcomulada:");
-            foreach (var frecuencia in cumulativeFrecuency)
-            {
-                Console.WriteLine(frecuencia);
-            }
-
-            Console.WriteLine("\nprovavilidadAcomulada:");
-            foreach (var probabilidad in cumulativeProbability)
-            {
-                Console.WriteLine(probabilidad);
-            }
-
-            Console.WriteLine("\nFrecuenciaAcomuladaEsperada:");
-            foreach (var frecuencia in ExpectedCumulativeFrequency)
-            {
-                Console.WriteLine(frecuencia);
-            }
-
-            Console.WriteLine("\nprovavilidadAcomuladaEsperada:");
-            foreach (var probabilidad in ExpectedCumulativeProbability)
-            {
-                Console.WriteLine(probabilidad);
-            }
-
             double difMax = ObservedDifference.Max();
             Boolean isValid = difMax < 0.18841;
-
-            Console.WriteLine("\nDiferenciaObtenida:");
-            foreach (var diferencia in ObservedDifference)
-            {
-                Console.WriteLine(diferencia);
-            }
-
-            Console.WriteLine($"\nCumple: {isValid}");
+            ResultData.Add("Error Maximo: ", difMax);
+            ResultData.Add("Valor KS: ", 0.18841);
             return isValid;
         }
         private List<Tuple<double, double>> CreateIntervals(double minData, double maxData, int numberOfIntervals)
@@ -103,10 +105,6 @@ namespace ModelRandomTest
                 double upperBound = interval.Item2;
                 int frecuency = RiData.Count(x => x >= lowerBound && x < upperBound);
                 IntervalFrecuency[interval] = frecuency;
-            }
-            foreach (var kvp in IntervalFrecuency)
-            {
-                Console.WriteLine($"Intervalo [{kvp.Key.Item1}, {kvp.Key.Item2}): {kvp.Value}");
             }
             return IntervalFrecuency;
         }

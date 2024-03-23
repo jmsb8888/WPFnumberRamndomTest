@@ -17,9 +17,6 @@ using System.Windows.Shapes;
 
 namespace numberRamndomTest
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         string filePath = string.Empty;
@@ -89,16 +86,12 @@ namespace numberRamndomTest
            
             DoMeansTest = !DoMeansTest;
             SetButtonState(btnMeans, DoMeansTest);
-            /*SetTestState(DoMeansTest, false, false, false, false);
-            SelectAndDeselect();*/
 
         }
 
         private void Test_Variance(object sender, RoutedEventArgs e)
         {
             DoVarianceTest = !DoVarianceTest;
-            /*SetTestState(false, DoVarianceTest, false, false, false);
-            SelectAndDeselect();*/
             SetButtonState(btnVar, DoVarianceTest);
 
         }
@@ -106,23 +99,17 @@ namespace numberRamndomTest
         private void Test_CHI_Square(object sender, RoutedEventArgs e)
         {
             DoChiSquareTest = !DoChiSquareTest;
-            /*SetTestState(false, false, DoChiSquareTest, false, false);
-            SelectAndDeselect();*/
             SetButtonState(btnCHI, DoChiSquareTest);
         }
 
         private void Test_KS(object sender, RoutedEventArgs e)
         {
             DoKSTest= !DoKSTest;
-            /*SetTestState(false, false, false, DoKSTest, false);
-            SelectAndDeselect();*/
             SetButtonState(btnKS, DoKSTest);
         }
         private void Test_Poker(object sender, RoutedEventArgs e)
         {
             DoPokerTest= !DoPokerTest;
-            /*SetTestState(false, false, false, false, DoPokerTest);
-            SelectAndDeselect();*/
             SetButtonState(btnPoker, DoPokerTest);
         }
         private void All_Test(object sender, RoutedEventArgs e)
@@ -179,7 +166,10 @@ namespace numberRamndomTest
                     document = PrintResult(condition.Key, controller, result, document);
                     if(count == 2 && condition.Value)
                     {
-                        document = CreateTable(6, controller.GetTableChiSquares(), document);
+                        document = CreateTableCHiSquare(6, controller.GetTableChiSquares(), document);
+                    }else if(count == 3 && condition.Value)
+                    {
+                        document = CreateTableKs(9, controller.GetTableKS(), document);
                     }
                 }
                 count++;
@@ -207,7 +197,7 @@ namespace numberRamndomTest
          
             return document;
         }
-        private FlowDocument CreateTable(int numColumns, ObservableCollection<FormatTableChiSquare> data, FlowDocument document)
+        private FlowDocument CreateTableCHiSquare(int numColumns, ObservableCollection<FormatTableChiSquare> data, FlowDocument document)
         {
             Table table = new Table();
             for (int i = 0; i < numColumns; i++)
@@ -230,6 +220,34 @@ namespace numberRamndomTest
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.CHiSquarer.ToString()))));
             }
             document.Blocks.Add(table);    
+            return document;
+        }
+        private FlowDocument CreateTableKs(int numColumns, ObservableCollection<FormatTableKS> data, FlowDocument document)
+        {
+            Table table = new Table();
+            for (int i = 0; i < numColumns; i++)
+            {
+                TableColumn column = new TableColumn();
+                table.Columns.Add(column);
+            }
+
+            table.RowGroups.Add(new TableRowGroup());
+
+            foreach (var item in data)
+            {
+                TableRow row = new TableRow();
+                table.RowGroups[0].Rows.Add(row);
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Beginning.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedFrequency.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedObtainedFrecuency.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedProbability.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedExpectedFrequency.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Difference.ToString()))));
+            }
+            document.Blocks.Add(table);
             return document;
         }
     }
