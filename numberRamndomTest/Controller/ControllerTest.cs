@@ -1,6 +1,8 @@
 ﻿using ModelRandomTest;
+using numberRamndomTest.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +20,7 @@ namespace numberRamndomTest.Controller
         string filePath;
         List<double> Data;
         Dictionary<string, double> results;
+        ObservableCollection<FormatTableChiSquare> formatTableChiSquare;
         public ControllerTest(string filePath, double EstimationError,int IntervalQuantity)
         {
             this.filePath = filePath;
@@ -32,6 +35,11 @@ namespace numberRamndomTest.Controller
         public Dictionary<string, double> GetResults()
         {
             return this.results;
+        }
+
+        public ObservableCollection<FormatTableChiSquare> GetTableChiSquares()
+        {
+            return this.formatTableChiSquare;
         }
         private List<double> CreateCsvFile()
         {
@@ -82,7 +90,8 @@ namespace numberRamndomTest.Controller
             try
             {
                 Boolean result = chiSquaredTest.testChiSquarer();
-                results = meanTest.GetResults();
+                results = chiSquaredTest.GetResults();
+                formatTableChiSquare = chiSquaredTest.GetTableChiSquares();
                 return result;
             }
             catch (Exception ex)

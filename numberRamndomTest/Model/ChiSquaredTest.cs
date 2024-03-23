@@ -1,8 +1,11 @@
 ﻿using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;
+using numberRamndomTest.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,13 +14,23 @@ namespace ModelRandomTest
     internal class ChiSquaredTest
     {
         List<double> RiData = new List<double>();
+        Dictionary<string, double> ResultData = new Dictionary<string, double>();
         double EstimationError;
         int numberIntervals;
+        ObservableCollection<FormatTableChiSquare> formatTableChiSquare = new ObservableCollection<FormatTableChiSquare>();
         public ChiSquaredTest(List<double> RiData, double EstimationError, int numberIntervals)
         {
             this.RiData = RiData;
             this.EstimationError = EstimationError;
             this.numberIntervals = numberIntervals;
+        }
+        public Dictionary<string, double> GetResults()
+        {
+            return this.ResultData;
+        }
+        public ObservableCollection<FormatTableChiSquare> GetTableChiSquares()
+        {
+            return this.formatTableChiSquare;
         }
         public Boolean testChiSquarer()
         {
@@ -27,13 +40,14 @@ namespace ModelRandomTest
             {
                 numberIntervals = (int)Math.Ceiling((3.5 * Statistics.StandardDeviation(RiData)) / Math.Cbrt(RiData.Count));
             }
-            Console.WriteLine("NUMERO INETRVALOS  " + numberIntervals);
+            ResultData.Add("Cantidad de datos: ", RiData.Count);
+            ResultData.Add("Cantidad de intervalos: ", numberIntervals);
             Dictionary<Tuple<double, double>, int> IntervalFrecuency = CalculateFrecuency(CreateIntervals(minData, maxData, numberIntervals), numberIntervals);
             double resultChiSquarer = calculateChiSquarer(IntervalFrecuency, numberIntervals);
             double ErrorChiSquarer = ChiSquared.InvCDF(numberIntervals - 1, 1 - EstimationError);
-            Console.WriteLine($"suma chi2 {resultChiSquarer}  CHISQUARER {ErrorChiSquarer}");
-            Boolean isValid = ErrorChiSquarer >= resultChiSquarer;
-            Console.WriteLine($"sirven: {isValid}");
+            ResultData.Add("ErrorChiSquarer total CHI2: ", resultChiSquarer);
+            ResultData.Add("Valor de CHI inv: ", ErrorChiSquarer);
+            Boolean isValid = ErrorChiSquarer >= ErrorChiSquarer;
             return isValid;
         }
         private List<Tuple<double, double>> CreateIntervals(double minData, double maxData, int numberOfIntervals)
@@ -61,10 +75,6 @@ namespace ModelRandomTest
                 int frecuency = RiData.Count(x => x >= lowerBound && x < upperBound);
                 IntervalFrecuency[interval] = frecuency;
             }
-            foreach (var kvp in IntervalFrecuency)
-            {
-                Console.WriteLine($"Intervalo [{kvp.Key.Item1}, {kvp.Key.Item2}): {kvp.Value}");
-            }
             return IntervalFrecuency;
         }
 
@@ -72,14 +82,23 @@ namespace ModelRandomTest
         {
             double expectedFrecuency = (double)RiData.Count / numberOfIntervals;
             List<double> chiSquarer = new List<double>();
+            int index = 0;
             foreach (var kvp in IntervalFrecuency)
             {
                 double difference = Math.Pow(kvp.Value - expectedFrecuency, 2) / expectedFrecuency;
-                Console.WriteLine($"Diferencia para {kvp.Key}: {difference}  esperada {expectedFrecuency}");
+                FormatTableChiSquare newRow = new FormatTableChiSquare
+                {
+                    Index = index++,
+                    beginning = kvp.Key.Item1,
+                    End = kvp.Key.Item2,
+                    FrequencyObtained = kvp.Value,
+                    ExpectedFrequency = expectedFrecuency,
+                    CHiSquarer = difference
+                };
+                formatTableChiSquare.Add(newRow);
                 chiSquarer.Add(difference);
             }
             double resultChiSquarer = chiSquarer.Sum();
-            Console.WriteLine($"suma chi2 {resultChiSquarer}");
             return resultChiSquarer;
         }
 

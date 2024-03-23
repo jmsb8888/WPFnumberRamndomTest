@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32;
 using ModelRandomTest;
 using numberRamndomTest.Controller;
+using numberRamndomTest.Model;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Windows;
@@ -142,7 +144,7 @@ namespace numberRamndomTest
         }
         private void Start_Test(object sender, RoutedEventArgs e)
         {
-            ControllerTest controller = new ControllerTest(filePath, 0.05, 100);
+            ControllerTest controller = new ControllerTest(filePath, 0.05, 8);
             var tests = new Dictionary<string, Func<bool>>
                 {
                     { "DoMeansTest", () => controller.CreateMeanTest() },
@@ -167,13 +169,20 @@ namespace numberRamndomTest
         private void ExecuteTest(Dictionary<string, bool> conditions, Dictionary<string, Func<bool>> tests, ControllerTest controller)
         {
             FlowDocument document = new FlowDocument();
+            int count = 0;
             foreach (var condition in conditions)
             {
+                
                 if (condition.Value && tests.TryGetValue(condition.Key, out var testAction))
                 {
                     bool result = testAction();
                     document = PrintResult(condition.Key, controller, result, document);
+                    if(count == 2 && condition.Value)
+                    {
+                        document = CreateTable(6, controller.GetTableChiSquares(), document);
+                    }
                 }
+                count++;
             }
             FlDoResult.Document = document;
         }
@@ -195,6 +204,32 @@ namespace numberRamndomTest
                 paragraph = new Paragraph(new Run(""));
                 document.Blocks.Add(paragraph);
             }
+         
+            return document;
+        }
+        private FlowDocument CreateTable(int numColumns, ObservableCollection<FormatTableChiSquare> data, FlowDocument document)
+        {
+            Table table = new Table();
+            for (int i = 0; i < numColumns; i++)
+            {
+                TableColumn column = new TableColumn();
+                table.Columns.Add(column);
+            }
+
+            table.RowGroups.Add(new TableRowGroup());
+
+            foreach (var item in data)
+            {
+                TableRow row = new TableRow();
+                table.RowGroups[0].Rows.Add(row);
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.beginning.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.FrequencyObtained.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedFrequency.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.CHiSquarer.ToString()))));
+            }
+            document.Blocks.Add(table);    
             return document;
         }
     }
