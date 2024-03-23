@@ -11,12 +11,16 @@ namespace ModelRandomTest
     internal class VarianceTest
     {
         List<double> RiData = new List<double>();
+        Dictionary<string, double> ResultData = new Dictionary<string, double>();
         double EstimationError;
         public VarianceTest(List<double> RiData, double EstimationError)
         {
             this.RiData = RiData;
             this.EstimationError = EstimationError;
-
+        }
+        public Dictionary<string, double> GetResults()
+        {
+            return this.ResultData;
         }
 
         public Boolean testVar()
@@ -31,17 +35,15 @@ namespace ModelRandomTest
             double upperLimit = chiSquarer2 / (12 * (RiData.Count - 1));
             Boolean isValid = variance >= upperLimit && variance <= lowerLimit;
 
-
-            Console.WriteLine(RiData.Count);
-            Console.WriteLine("variance: " + variance + "\n");
-            Console.WriteLine("value: " + oneMinusMidpointAlphaValue + "\n");
-            Console.WriteLine("valueMeans: " + MidpointAlphaValue + "\n");
-            Console.WriteLine("chiSquarer1: " + chiSquarer1 + "\n");
-            Console.WriteLine("chiSquarer2: " + chiSquarer2 + "\n");
-            Console.WriteLine("lowerLimit: " + lowerLimit + "\n");
-            Console.WriteLine("upperLimit: " + upperLimit + "\n");
-            Console.WriteLine("exit: " + isValid + "\n");
-            Console.WriteLine("z: " + zValue + "\n");
+            ResultData.Add("Cantidad de datos: ", RiData.Count);
+            ResultData.Add("Varianza de los datos: ", variance);
+            ResultData.Add("Valor para 1- (α/2): ", oneMinusMidpointAlphaValue);
+            ResultData.Add("Valor para α/2: ", MidpointAlphaValue);
+            ResultData.Add("Valor para X^2 de α/2: ", chiSquarer1);
+            ResultData.Add("Valor para X^2 de 1-(α/2): ", chiSquarer2);
+            ResultData.Add("Valor de z: ", zValue);
+            ResultData.Add("Limite inferior", lowerLimit);
+            ResultData.Add("Limite superior", upperLimit);
             return isValid;
         }
     }

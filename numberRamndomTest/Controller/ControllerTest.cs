@@ -67,7 +67,7 @@ namespace numberRamndomTest.Controller
             try
             {
                 Boolean result = varianceTest.testVar();
-                results = meanTest.GetResults();
+                results = varianceTest.GetResults();
                 return result;
             }
             catch (Exception ex)

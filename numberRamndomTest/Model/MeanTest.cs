@@ -25,28 +25,18 @@ namespace ModelRandomTest
         }
         public Boolean TakeTest()
         {
-            Console.WriteLine("Cantidad de datos "+RiData.Count);    
             double average = Statistics.Mean(RiData);
             double oneMinusMidpointAlphaValue = 1 - (EstimationError / 2);
             double zValue = Normal.InvCDF(0, 1, oneMinusMidpointAlphaValue);
             double lowerLimit = (0.5) - (zValue * (1 / (Math.Sqrt(12 * RiData.Count))));
             double upperLimit = (0.5) + (zValue * (1 / (Math.Sqrt(12 * RiData.Count))));
             Boolean isValid = average < upperLimit && average > lowerLimit;
-
             ResultData.Add("Cantidad de datos: ",RiData.Count);
             ResultData.Add("Media de los datos: ",average);
             ResultData.Add("Valor para 1- (α/2): ", oneMinusMidpointAlphaValue);
             ResultData.Add("Valor de z: ",zValue);
             ResultData.Add("Limite inferior",lowerLimit);
             ResultData.Add("Limite superior",upperLimit);
-
-            Console.WriteLine(RiData.Count);
-            Console.WriteLine("average: " + average + "\n");
-            Console.WriteLine("value: " + oneMinusMidpointAlphaValue + "\n");
-            Console.WriteLine("lowerLimit: " + lowerLimit + "\n");
-            Console.WriteLine("upperLimit: " + upperLimit + "\n");
-            Console.WriteLine("exit: " + isValid + "\n");
-            Console.WriteLine("z: " + zValue + "\n");
             return isValid;
         }
     }

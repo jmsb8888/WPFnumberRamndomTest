@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using ModelRandomTest;
 using numberRamndomTest.Controller;
+using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -165,30 +166,36 @@ namespace numberRamndomTest
 
         private void ExecuteTest(Dictionary<string, bool> conditions, Dictionary<string, Func<bool>> tests, ControllerTest controller)
         {
+            FlowDocument document = new FlowDocument();
             foreach (var condition in conditions)
             {
                 if (condition.Value && tests.TryGetValue(condition.Key, out var testAction))
                 {
                     bool result = testAction();
-                    PrintResult(condition.Key, controller, result);
+                    document = PrintResult(condition.Key, controller, result, document);
                 }
             }
+            FlDoResult.Document = document;
         }
-        private void PrintResult(string nameTest, ControllerTest controller, bool resultTest)
+
+        private FlowDocument PrintResult(string nameTest, ControllerTest controller, bool resultTest, FlowDocument document)
         {
             Dictionary<string, double> result = controller.GetResults();
-
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(nameTest);
+            Paragraph paragraph = new Paragraph(new Run(nameTest));
+            document.Blocks.Add(paragraph);
             foreach (var pair in result)
             {
-                sb.AppendLine($"Clave: {pair.Key}, Valor: {pair.Value}");
+                paragraph = new Paragraph(new Run($"Clave: {pair.Key}, Valor: {pair.Value.ToString(CultureInfo.InvariantCulture)}"));
+                document.Blocks.Add(paragraph);
             }
-            sb.AppendLine("resultado de la prueba: " + resultTest);
-            sb.AppendLine("");
-            sb.AppendLine("");
-            sb.AppendLine("");
-            TxtBlockResult.Text = sb.ToString();
+            paragraph = new Paragraph(new Run("Resultado de la prueba: " + resultTest));
+            document.Blocks.Add(paragraph);
+            for (int i = 0; i < 3; i++)
+            {
+                paragraph = new Paragraph(new Run(""));
+                document.Blocks.Add(paragraph);
+            }
+            return document;
         }
     }
 }
