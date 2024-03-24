@@ -91,7 +91,7 @@ namespace ModelRandomTest
                     Index = index++,
                     beginning = kvp.Key.Item1,
                     End = kvp.Key.Item2,
-                    FrequencyObtained = kvp.Value,
+                    ObtainedFrequency = kvp.Value,
                     ExpectedFrequency = expectedFrecuency,
                     CHiSquarer = difference
                 };

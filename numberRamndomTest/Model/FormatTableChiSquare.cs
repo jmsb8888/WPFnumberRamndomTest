@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace numberRamndomTest.Model
 {
-    class FormatTableChiSquare
+    class FormatTableChiSquare: IFormatData
     {
         public int Index { get; set; }
         public double beginning { get; set; }
         public double End { get; set; }
-        public double FrequencyObtained { get; set; }
+        public double ObtainedFrequency { get; set; }
         public double ExpectedFrequency { get; set; }
         public double CHiSquarer { get; set; }
     }

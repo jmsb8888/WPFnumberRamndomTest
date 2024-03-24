@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using MathNet.Numerics.Distributions;
+using Microsoft.Win32;
 using ModelRandomTest;
 using numberRamndomTest.Controller;
 using numberRamndomTest.Model;
@@ -9,12 +10,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using LiveCharts;
+using LiveCharts.Wpf;
+//using System.Windows.Forms.DataVisualization;
 namespace numberRamndomTest
 {
     public partial class MainWindow : Window
@@ -218,11 +222,12 @@ namespace numberRamndomTest
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString()))));
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.beginning.ToString()))));
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.FrequencyObtained.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedFrequency.ToString()))));
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedFrequency.ToString()))));
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.CHiSquarer.ToString()))));
             }
-            document.Blocks.Add(table);    
+            document.Blocks.Add(table);
+            document = CreateGraph(data, document);
             return document;
         }
         private FlowDocument CreateTableKs(int numColumns, ObservableCollection<FormatTableKS> data, FlowDocument document)
@@ -251,6 +256,7 @@ namespace numberRamndomTest
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.Difference.ToString()))));
             }
             document.Blocks.Add(table);
+            document = CreateGraph(data, document);
             return document;
         }
         private FlowDocument CreateTablePoker(int numColumns, ObservableCollection<FormatTablePoker> data, FlowDocument document)
@@ -275,6 +281,46 @@ namespace numberRamndomTest
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.Result.ToString()))));
             }
             document.Blocks.Add(table);
+            return document;
+        }
+        private FlowDocument CreateGraph<T>(ObservableCollection<T> data, FlowDocument document) where T : IFormatData
+        {
+            List<string> intervals = new List<string>();
+            List<int> frecuencys = new List<int>();
+            foreach (var item in data)
+            {
+                intervals.Add(item.Index.ToString());
+                frecuencys.Add((int) item.ObtainedFrequency);
+            }
+            var chart = new CartesianChart
+            {
+                Series = new LiveCharts.SeriesCollection
+                {
+                    new ColumnSeries
+                    {
+                        Title = "Frecuencia",
+                        Values = new ChartValues<int>(frecuencys)
+                    }
+                },
+                LegendLocation = LegendLocation.Right,
+                AxisX = new AxesCollection
+                {
+                    new LiveCharts.Wpf.Axis
+                    {
+                        Title = "Categorías",
+                        Labels = intervals
+                    }
+                },
+                AxisY = new AxesCollection
+                {
+                    new LiveCharts.Wpf.Axis
+                    {
+                        Title = "Frecuencia"
+                    }
+                },
+                Height = 400
+            };
+            document.Blocks.Add(new BlockUIContainer(chart));
             return document;
         }
     }

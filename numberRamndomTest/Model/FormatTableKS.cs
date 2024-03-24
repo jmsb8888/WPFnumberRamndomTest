@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace numberRamndomTest.Model
 {
-    class FormatTableKS
+    class FormatTableKS : IFormatData
     {
         public int Index { get; set; }
         public double Beginning { get; set; }
