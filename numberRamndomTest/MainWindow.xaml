@@ -3,19 +3,190 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:numberRamndomTest"
+        xmlns:local="clr-namespace:numberRamndomTest" xmlns:model="clr-namespace:numberRamndomTest.Model" d:DataContext="{d:DesignInstance Type=model:ViewModelVisibility}"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid>
-        <Button Content="Cargar Archivo" Name="btnLoad" HorizontalAlignment="Left" Height="32" Margin="25,24,0,0" VerticalAlignment="Top" Width="85" Click="Load_File" />
-        <Button Content="Realizar Todas las Pruebas" Name="btnAll" HorizontalAlignment="Left" Height="32" Margin="25,256,0,0" VerticalAlignment="Top" Width="85" Click="All_Test" />
-        <Button Content="Prueba de Medias" Name="btnMeans" HorizontalAlignment="Left" Margin="25,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Means"/>
-        <Button Content="Prueba de Varianza" Name="btnVar" HorizontalAlignment="Left" Margin="30,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Variance"/>
-        <Button Content="Prueba de CHi2" Name="btnCHI" HorizontalAlignment="Left" Margin="36,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_CHI_Square"/>
-        <Button Content="Prueba KS" Name ="btnKS" HorizontalAlignment="Left" Margin="36,217,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_KS"/>
-        <Button Content="Prueba de Poker" Name ="btnPoker" HorizontalAlignment="Left" Margin="26,110,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Poker"/>
-        <Button Content="Iniciar Prueba" Name="btnStart" HorizontalAlignment="Left" Margin="25,293,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Start_Test"/>
-        <FlowDocumentScrollViewer Name="FlDoResult"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="166,0,0,0"  FontWeight="Bold" FontStyle="Italic" Background="#FF845F5F" Height="434">
-        </FlowDocumentScrollViewer>
-    </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Button Grid.Column="0"  Content="Cargar Archivo" Name="btnLoad" HorizontalAlignment="Left" Height="32" Margin="25,24,0,0" VerticalAlignment="Top" Width="85" Click="Load_File" />
+        <Button Grid.Column="0"  Content="Realizar Todas las Pruebas" Name="btnAll" HorizontalAlignment="Left" Height="32" Margin="25,256,0,0" VerticalAlignment="Top" Width="85" Click="All_Test" />
+        <Button Grid.Column="0"  Content="Prueba de Medias" Name="btnMeans" HorizontalAlignment="Left" Margin="25,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Means"/>
+        <Button Grid.Column="0"  Content="Prueba de Varianza" Name="btnVar" HorizontalAlignment="Left" Margin="30,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Variance"/>
+        <Button Grid.Column="0"  Content="Prueba de CHi2" Name="btnCHI" HorizontalAlignment="Left" Margin="36,182,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_CHI_Square"/>
+        <Button Grid.Column="0"  Content="Prueba KS" Name ="btnKS" HorizontalAlignment="Left" Margin="36,217,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_KS"/>
+        <Button Grid.Column="0"  Content="Prueba de Poker" Name ="btnPoker" HorizontalAlignment="Left" Margin="26,110,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Test_Poker"/>
+        <Button Grid.Column="0"  Content="Iniciar Prueba" Name="btnStart" HorizontalAlignment="Left" Margin="25,293,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Start_Test"/>
+
+        <RichTextBox x:Name="MeanTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="0" Width="auto" Height="auto" HorizontalAlignment="Left"  VerticalAlignment="Top"
+                      Visibility="{Binding IsMeanVisible}">
+            <FlowDocument>
+                    <Paragraph></Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        
+        <RichTextBox x:Name="VarianceTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="1" Width="auto" Height="auto" HorizontalAlignment="Left"  VerticalAlignment="Top"
+                      Visibility="{Binding IsVarianceVisible}">
+            <FlowDocument>
+                    <Paragraph></Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
+        <RichTextBox x:Name="CHiSquareTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="2" Width="auto" Height="auto" HorizontalAlignment="Left"  VerticalAlignment="Top"
+                      Visibility="{Binding IsChiSquareVisible}">
+            <FlowDocument>
+                    <Paragraph></Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
+        <DataGrid Grid.Column="1" Grid.Row="3" x:Name="Chi2Table" AutoGenerateColumns="False" Margin="10" Width="auto" Height="Auto" Visibility="{Binding IsChiSquareVisible}"
+                  IsReadOnly="True"  FontSize="18" >
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="FontWeight" Value="Bold" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                <DataGridTextColumn Header="No" Binding="{Binding Index}" Width="*"/>
+                    <DataGridTextColumn Header="Inicio" Binding="{Binding beginning, StringFormat={}{0:F5}}" Width="*" />
+                    <DataGridTextColumn Header="Fin" Binding="{Binding End, StringFormat={}{0:F5}}" Width="*"/>
+                    <DataGridTextColumn Width="*" Binding="{Binding ObtainedFrequency, StringFormat={}{0:F5}}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Frecuencia&#x0a;Obtenida</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Binding="{Binding ExpectedFrequency, StringFormat={}{0:F5}}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Frecuencia&#x0a;Esperada</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Binding="{Binding CHiSquarer, StringFormat={}{0:F5}}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Chi&#x0a;Cuadrado</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+        </DataGrid>
+
+            <lvc:CartesianChart  Grid.Column="1" Grid.Row="4" Visibility="{Binding IsChiSquareVisible}" Series="{Binding ChartSeriesChiSquare}"
+                    LegendLocation="Right"
+                    Height="400">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Title="Categorías"
+                  Labels="{Binding Intervals}"/>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="Frecuencia"/>
+                </lvc:CartesianChart.AxisY>
+         </lvc:CartesianChart>
+
+        <RichTextBox x:Name="KsTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="5" Width="auto" Height="auto" HorizontalAlignment="Left"  VerticalAlignment="Top"
+                      Visibility="{Binding IsKsTestVisible}">
+            <FlowDocument>
+                    <Paragraph></Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
+            <DataGrid Grid.Column="1" Grid.Row="6" x:Name="KSTestTable" AutoGenerateColumns="False" Margin="10" Width="auto" Height="Auto" Visibility="{Binding IsKsTestVisible}" 
+                      IsReadOnly="True"  FontSize="18"  >
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="FontWeight" Value="Bold" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="No" Binding="{Binding Index}" />
+                    <DataGridTextColumn Header="Inicio" Binding="{Binding Beginning, StringFormat={}{0:F5}}" Width="*" />
+                    <DataGridTextColumn Header="Fin" Binding="{Binding End, StringFormat={}{0:F5}}" Width="*" />
+                    <DataGridTextColumn Width="*" Binding="{Binding ObtainedFrequency}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Frecuencia&#x0a;Obtenida</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Binding="{Binding AcomulatedObtainedFrecuency}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Frecuencia Acumulada&#xA;Obtenida</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Binding="{Binding ObtainedProbability, StringFormat={}{0:F5}}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Probabilidad&#x0a;Obtenida</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding AcomulatedExpectedFrequency, StringFormat={}{0:F5}}" Width="*">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Frecuencia Esperada Acumulada</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Binding="{Binding ExpectedProbability, StringFormat={}{0:F5}}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Probabilidad&#x0a;Esperada</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn Header="Diferencia" Binding="{Binding Difference, StringFormat={}{0:F5}}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+
+            <lvc:CartesianChart  Grid.Column="1" Grid.Row="7" Visibility="{Binding IsKsTestVisible}" Series="{Binding ChartSeriesKS}"
+            LegendLocation="Right" Height="400">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="Categorías"
+        Labels="{Binding Intervals}"/>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Frecuencia"/>
+            </lvc:CartesianChart.AxisY>
+        </lvc:CartesianChart>
+
+        <RichTextBox x:Name="PokerTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="8" Width="auto" Height="auto" HorizontalAlignment="Left"  VerticalAlignment="Top"
+                      Visibility="{Binding IsPokerVisible}">
+            <FlowDocument>
+                    <Paragraph></Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
+        <DataGrid Grid.Column="1" Grid.Row="9" x:Name="PokerTestTable" AutoGenerateColumns="False" Margin="10" Width="auto" Height="Auto" Visibility="{Binding IsPokerVisible}"
+                  IsReadOnly="True"  FontSize="18"  >
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="FontWeight" Value="Bold" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                <DataGridTextColumn Header="Mano" Binding="{Binding Hand}" Width="*"/>
+                    <DataGridTextColumn Header="Cantidad&#x0a;Encontrada" Binding="{Binding ObservedQuantity}" Width="*" />
+                    <DataGridTextColumn Width="*" Binding="{Binding Probability, StringFormat={}{0:F5}}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Probabilidad&#x0a;por Mano</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="*" Binding="{Binding ExpectedProbability, StringFormat={}{0:F5}}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock TextWrapping="Wrap">Probabilidad&#x0a;Esperada</TextBlock>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Error" Binding="{Binding Result, StringFormat={}{0:F5}}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        </Grid>
+    </ScrollViewer>
 </Window>

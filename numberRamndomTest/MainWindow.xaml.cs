@@ -1,4 +1,4 @@
-﻿using MathNet.Numerics.Distributions;
+﻿﻿using MathNet.Numerics.Distributions;
 using Microsoft.Win32;
 using ModelRandomTest;
 using numberRamndomTest.Controller;
@@ -18,7 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LiveCharts;
 using LiveCharts.Wpf;
-//using System.Windows.Forms.DataVisualization;
+using System.Windows.Automation;
 namespace numberRamndomTest
 {
     public partial class MainWindow : Window
@@ -31,30 +31,18 @@ namespace numberRamndomTest
         Boolean DoPokerTest = false;
         Boolean DoAllTest = false;
         Boolean isAddFile = false;
-
+        ViewModelVisibility viewModelVisibility = new ViewModelVisibility();
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = viewModelVisibility;
+            viewModelVisibility.IsMeanVisible = ControlVisibility(DoMeansTest);
+            viewModelVisibility.IsVarianceVisible = ControlVisibility(DoVarianceTest);
+            viewModelVisibility.IsChiSquareVisible = ControlVisibility(DoChiSquareTest);
+            viewModelVisibility.IsKsTestVisible = ControlVisibility(DoKSTest);
+            viewModelVisibility.IsPokerVisible = ControlVisibility(DoPokerTest);
             ActicateAndDeactivateAll();
         }
-       /* private void SetTestState(bool means, bool variance, bool chiSquare, bool ks, bool poker)
-        {
-            DoMeansTest = means;
-            DoVarianceTest = variance;
-            DoChiSquareTest = chiSquare;
-            DoKSTest = ks;
-            DoPokerTest = poker;
-        }
-        private void SelectAndDeselect()
-        {
-            SetButtonState(btnMeans, DoMeansTest);
-            SetButtonState(btnVar, DoVarianceTest);
-            SetButtonState(btnCHI, DoChiSquareTest);
-            SetButtonState(btnKS, DoKSTest);
-            SetButtonState(btnPoker, DoPokerTest);
-            SetButtonState(btnStart, isAddFile);
-            SetButtonState(btnAll, DoAllTest);
-        }*/
          private void ActicateAndDeactivateAll()
         {
             btnMeans.IsEnabled = isAddFile;
@@ -65,6 +53,10 @@ namespace numberRamndomTest
             btnStart.IsEnabled = isAddFile;
             btnAll.IsEnabled = isAddFile;
 
+        }
+        private Visibility ControlVisibility(bool value)
+        {
+            return value ? Visibility.Visible : Visibility.Collapsed;
         }
         private void SetButtonState(Button button, bool isEnabled)
         {
@@ -153,6 +145,12 @@ namespace numberRamndomTest
                     { "DoKSTest", DoKSTest },
                     { "DoPokerTest", DoPokerTest }
                 };
+            viewModelVisibility.IsMeanVisible = ControlVisibility(DoMeansTest);
+            viewModelVisibility.IsVarianceVisible = ControlVisibility(DoVarianceTest);
+            viewModelVisibility.IsChiSquareVisible = ControlVisibility(DoChiSquareTest);
+            viewModelVisibility.IsKsTestVisible = ControlVisibility(DoKSTest);
+            viewModelVisibility.IsPokerVisible = ControlVisibility(DoPokerTest);
+
 
             ExecuteTest(conditions, tests, controller);
         }
@@ -167,219 +165,110 @@ namespace numberRamndomTest
                 if (condition.Value && tests.TryGetValue(condition.Key, out var testAction))
                 {
                     bool result = testAction();
-                    document = PrintResult(condition.Key, controller, result, document);
-                    if(count == 2 && condition.Value)
+                    if (count == 0)
                     {
-                        document = CreateTableCHiSquare(6, controller.GetTableChiSquares(), document);
+                        PrintResult(condition.Key, controller, result, MeanTest);
+                    }
+                    else if (count == 1)
+                    {
+                        PrintResult(condition.Key, controller, result, VarianceTest);
+                    }else if(count == 2 && condition.Value)
+                    {
+                        PrintResult(condition.Key, controller, result, CHiSquareTest);
+                        CreateTableCHiSquare(controller.GetTableChiSquares());
                     }else if(count == 3 && condition.Value)
                     {
-                        document = CreateTableKs(9, controller.GetTableKS(), document);
+                        PrintResult(condition.Key, controller, result, KsTest);
+                        CreateTableKs(controller.GetTableKS());
                     }else if (count == 4 && condition.Value)
                     {
-                        document = CreateTablePoker(5, controller.GetTablePoker(), document);
+                        PrintResult(condition.Key, controller, result, PokerTest);
+                        CreateTablePoker(controller.GetTablePoker());
                     }
                 }
                 count++;
             }
-            FlDoResult.Document = document;
+            
         }
 
-        private FlowDocument PrintResult(string nameTest, ControllerTest controller, bool resultTest, FlowDocument document)
+        private void PrintResult(string nameTest, ControllerTest controller, bool resultTest, RichTextBox rich)
         {
             Dictionary<string, double> result = controller.GetResults();
-            Paragraph paragraph = new Paragraph(new Run(nameTest));
-            document.Blocks.Add(paragraph);
+            Paragraph titleParagraph = new Paragraph(new Run(nameTest));
+            titleParagraph.FontWeight = FontWeights.Bold;
+            titleParagraph.FontSize = 25;
+            rich.Document.Blocks.Add(titleParagraph);
+
             foreach (var pair in result)
             {
-                paragraph = new Paragraph(new Run($"Clave: {pair.Key}, Valor: {pair.Value.ToString("N5",CultureInfo.InvariantCulture)}"));
-                document.Blocks.Add(paragraph);
+                Paragraph paragraph = new Paragraph(new Run($"{pair.Key}: {pair.Value.ToString("N5", CultureInfo.InvariantCulture)}"));
+                paragraph.FontSize = 22;
+                rich.Document.Blocks.Add(paragraph);
             }
-            paragraph = new Paragraph(new Run("Resultado de la prueba: " + resultTest));
-            document.Blocks.Add(paragraph);
+
+            // Resultado de la prueba
+            Paragraph resultParagraph = new Paragraph(new Run("Resultado de la prueba: " + resultTest));
+            resultParagraph.FontSize = 22; 
+            rich.Document.Blocks.Add(resultParagraph);
+
+            // Añadir espacios en blanco
             for (int i = 0; i < 3; i++)
             {
-                paragraph = new Paragraph(new Run(""));
-                document.Blocks.Add(paragraph);
+                Paragraph blankParagraph = new Paragraph(new Run(""));
+                rich.Document.Blocks.Add(blankParagraph);
             }
-         
-            return document;
         }
-        private FlowDocument CreateTableCHiSquare(int numColumns, ObservableCollection<FormatTableChiSquare> data, FlowDocument document)
+        
+        
+
+        private void CreateTableCHiSquare(ObservableCollection<FormatTableChiSquare> data)
         {
-            Table table = new Table();
-            for (int i = 0; i < numColumns; i++)
-            {
-                TableColumn column = new TableColumn();
-                table.Columns.Add(column);
-            }
-
-            table.RowGroups.Add(new TableRowGroup());
-            TableRow headerRow = new TableRow();
-            table.RowGroups[0].Rows.Add(headerRow);
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Índice"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Inicio"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Fin"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Obtenida"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Esperada"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Chi Cuadrado"))));
-            foreach (var cell in headerRow.Cells)
-            {
-                cell.BorderBrush = Brushes.Black;
-                cell.BorderThickness = new Thickness(1);
-            }
-
-            foreach (var item in data)
-            {
-                TableRow row = new TableRow();
-                table.RowGroups[0].Rows.Add(row);
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.beginning.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedFrequency.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedFrequency.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.CHiSquarer.ToString("N5")))));
-                foreach (var cell in row.Cells)
-                {
-                    cell.BorderBrush = Brushes.Black;
-                    cell.BorderThickness = new Thickness(1);
-                }
-            }
-
-            document.Blocks.Add(table);
-            document = CreateGraph(data, document);
-            return document;
+            Chi2Table.ItemsSource = data;
+            CreateGraph(data, "Chi2");    
         }
-        private FlowDocument CreateTableKs(int numColumns, ObservableCollection<FormatTableKS> data, FlowDocument document)
+        private void CreateTableKs(ObservableCollection<FormatTableKS> data)
         {
-            Table table = new Table();
-            for (int i = 0; i < numColumns; i++)
-            {
-                TableColumn column = new TableColumn();
-                table.Columns.Add(column);
-            }
-
-            table.RowGroups.Add(new TableRowGroup());
-
-            TableRow headerRow = new TableRow();
-            table.RowGroups[0].Rows.Add(headerRow);
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("No"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Inicio"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Fin"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Obtenida"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Acumulada Obtenida"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Probabilidad Obtenida"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Esperada Acumulada"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Probabilidad Esperada"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Diferencia"))));
-            foreach(var cell in headerRow.Cells)
-            {
-                cell.BorderBrush = Brushes.Black;
-                cell.BorderThickness = new Thickness(1);
-            }
-
-
-            foreach (var item in data)
-            {
-                TableRow row = new TableRow();
-                table.RowGroups[0].Rows.Add(row);
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Beginning.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedFrequency.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedObtainedFrecuency.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedProbability.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedExpectedFrequency.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Difference.ToString("N5")))));
-                foreach (var cell in row.Cells)
-                {
-                    cell.BorderBrush = Brushes.Black;
-                    cell.BorderThickness = new Thickness(1);
-                }
-            }
-            document.Blocks.Add(table);
-            document = CreateGraph(data, document);
-            return document;
+           KSTestTable.ItemsSource = data;
+            CreateGraph(data, "KS");  
         }
-        private FlowDocument CreateTablePoker(int numColumns, ObservableCollection<FormatTablePoker> data, FlowDocument document)
+        private void CreateTablePoker(ObservableCollection<FormatTablePoker> data)
         {
-            Table table = new Table();
-            for (int i = 0; i < numColumns; i++)
-            {
-                TableColumn column = new TableColumn();
-                table.Columns.Add(column);
-            }
-
-            table.RowGroups.Add(new TableRowGroup());
-            TableRow headerRow = new TableRow();
-            table.RowGroups[0].Rows.Add(headerRow);
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Mano"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Cantidad Observada"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Probabilidad"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Probabilidad Esperada"))));
-            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Resultado"))));
-            foreach (var cell in headerRow.Cells)
-            {
-                cell.BorderBrush = Brushes.Black;
-                cell.BorderThickness = new Thickness(1);
-            }
-            foreach (var item in data)
-            {
-                TableRow row = new TableRow();
-                table.RowGroups[0].Rows.Add(row);
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Hand.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObservedQuantity.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Probability.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString("N5")))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Result.ToString("N5")))));
-                foreach (var cell in row.Cells)
-                {
-                    cell.BorderBrush = Brushes.Black;
-                    cell.BorderThickness = new Thickness(1);
-                }
-            }
-            document.Blocks.Add(table);
-            return document;
+            PokerTestTable.ItemsSource = data;
         }
-        private FlowDocument CreateGraph<T>(ObservableCollection<T> data, FlowDocument document) where T : IFormatData
+        private void CreateGraph<T>(ObservableCollection<T> data, string typeGraph) where T : IFormatData
         {
             List<string> intervals = new List<string>();
             List<int> frecuencys = new List<int>();
             foreach (var item in data)
             {
                 intervals.Add(item.Index.ToString());
-                frecuencys.Add((int) item.ObtainedFrequency);
+                frecuencys.Add((int)item.ObtainedFrequency);
             }
-            var chart = new CartesianChart
-            {
-                Series = new LiveCharts.SeriesCollection
+            var serie = new LiveCharts.SeriesCollection
                 {
                     new ColumnSeries
                     {
                         Title = "Frecuencia",
                         Values = new ChartValues<int>(frecuencys)
                     }
-                },
-                LegendLocation = LegendLocation.Right,
-                AxisX = new AxesCollection
-                {
-                    new LiveCharts.Wpf.Axis
-                    {
-                        Title = "Categorías",
-                        Labels = intervals
-                    }
-                },
-                AxisY = new AxesCollection
-                {
-                    new LiveCharts.Wpf.Axis
-                    {
-                        Title = "Frecuencia"
-                    }
-                },
-                Height = 400
-            };
-            document.Blocks.Add(new BlockUIContainer(chart));
-            return document;
+                };
+            if (typeGraph.Equals("Chi2"))
+            {
+                viewModelVisibility.ChartSeriesChiSquare = serie;
+                viewModelVisibility.IntervalsChiSquare = intervals;
+                UpdateGraph(nameof(viewModelVisibility.ChartSeriesChiSquare), nameof(viewModelVisibility.IntervalsChiSquare));
+            }
+            else if (typeGraph.Equals("KS"))
+            {
+                viewModelVisibility.ChartSeriesKS = serie;
+                viewModelVisibility.IntervalsKs = intervals;
+                UpdateGraph(nameof(viewModelVisibility.ChartSeriesKS), nameof(viewModelVisibility.IntervalsKs));
+            }
+        }
+        private void UpdateGraph(string propertyOne, string propertyTwo)
+        {
+            viewModelVisibility.OnPropertyChanged(propertyOne);
+            viewModelVisibility.OnPropertyChanged(propertyTwo);
         }
     }
 }
