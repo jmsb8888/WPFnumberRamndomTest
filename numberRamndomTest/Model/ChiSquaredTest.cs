@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ModelRandomTest
 {
@@ -22,7 +23,7 @@ namespace ModelRandomTest
         {
             this.RiData = RiData;
             this.EstimationError = EstimationError;
-            this.numberIntervals = numberIntervals;
+            this.numberIntervals = numberIntervals <= 0 ? (int)Math.Ceiling(Math.Sqrt(RiData.Count)) : numberIntervals;
         }
         public Dictionary<string, double> GetResults()
         {
@@ -36,10 +37,6 @@ namespace ModelRandomTest
         {
             double minData = RiData.Min();
             double maxData = RiData.Max();
-            if (numberIntervals <= 0)
-            {
-                numberIntervals = (int)Math.Ceiling((3.5 * Statistics.StandardDeviation(RiData)) / Math.Cbrt(RiData.Count));
-            }
             ResultData.Add("Cantidad de datos: ", RiData.Count);
             ResultData.Add("Cantidad de intervalos: ", numberIntervals);
             Dictionary<Tuple<double, double>, int> IntervalFrecuency = CalculateFrecuency(CreateIntervals(minData, maxData, numberIntervals), numberIntervals);
@@ -82,7 +79,7 @@ namespace ModelRandomTest
         {
             double expectedFrecuency = (double)RiData.Count / numberOfIntervals;
             List<double> chiSquarer = new List<double>();
-            int index = 0;
+            int index = 1;
             foreach (var kvp in IntervalFrecuency)
             {
                 double difference = Math.Pow(kvp.Value - expectedFrecuency, 2) / expectedFrecuency;

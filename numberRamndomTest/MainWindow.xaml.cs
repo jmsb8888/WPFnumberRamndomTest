@@ -135,7 +135,7 @@ namespace numberRamndomTest
         }
         private void Start_Test(object sender, RoutedEventArgs e)
         {
-            ControllerTest controller = new ControllerTest(filePath, 0.05, 8);
+            ControllerTest controller = new ControllerTest(filePath, 0.05, 0);
             var tests = new Dictionary<string, Func<bool>>
                 {
                     { "DoMeansTest", () => controller.CreateMeanTest() },
@@ -191,7 +191,7 @@ namespace numberRamndomTest
             document.Blocks.Add(paragraph);
             foreach (var pair in result)
             {
-                paragraph = new Paragraph(new Run($"Clave: {pair.Key}, Valor: {pair.Value.ToString(CultureInfo.InvariantCulture)}"));
+                paragraph = new Paragraph(new Run($"Clave: {pair.Key}, Valor: {pair.Value.ToString("N5",CultureInfo.InvariantCulture)}"));
                 document.Blocks.Add(paragraph);
             }
             paragraph = new Paragraph(new Run("Resultado de la prueba: " + resultTest));
@@ -214,18 +214,37 @@ namespace numberRamndomTest
             }
 
             table.RowGroups.Add(new TableRowGroup());
+            TableRow headerRow = new TableRow();
+            table.RowGroups[0].Rows.Add(headerRow);
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Índice"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Inicio"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Fin"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Obtenida"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Esperada"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Chi Cuadrado"))));
+            foreach (var cell in headerRow.Cells)
+            {
+                cell.BorderBrush = Brushes.Black;
+                cell.BorderThickness = new Thickness(1);
+            }
 
             foreach (var item in data)
             {
                 TableRow row = new TableRow();
                 table.RowGroups[0].Rows.Add(row);
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.beginning.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedFrequency.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedFrequency.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.CHiSquarer.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.beginning.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedFrequency.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedFrequency.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.CHiSquarer.ToString("N5")))));
+                foreach (var cell in row.Cells)
+                {
+                    cell.BorderBrush = Brushes.Black;
+                    cell.BorderThickness = new Thickness(1);
+                }
             }
+
             document.Blocks.Add(table);
             document = CreateGraph(data, document);
             return document;
@@ -241,19 +260,42 @@ namespace numberRamndomTest
 
             table.RowGroups.Add(new TableRowGroup());
 
+            TableRow headerRow = new TableRow();
+            table.RowGroups[0].Rows.Add(headerRow);
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("No"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Inicio"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Fin"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Obtenida"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Acumulada Obtenida"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Probabilidad Obtenida"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Frecuencia Esperada Acumulada"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Probabilidad Esperada"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Diferencia"))));
+            foreach(var cell in headerRow.Cells)
+            {
+                cell.BorderBrush = Brushes.Black;
+                cell.BorderThickness = new Thickness(1);
+            }
+
+
             foreach (var item in data)
             {
                 TableRow row = new TableRow();
                 table.RowGroups[0].Rows.Add(row);
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Beginning.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedFrequency.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedObtainedFrecuency.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedProbability.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedExpectedFrequency.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Difference.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Index.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Beginning.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.End.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedFrequency.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedObtainedFrecuency.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObtainedProbability.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedExpectedFrequency.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Difference.ToString("N5")))));
+                foreach (var cell in row.Cells)
+                {
+                    cell.BorderBrush = Brushes.Black;
+                    cell.BorderThickness = new Thickness(1);
+                }
             }
             document.Blocks.Add(table);
             document = CreateGraph(data, document);
@@ -269,16 +311,32 @@ namespace numberRamndomTest
             }
 
             table.RowGroups.Add(new TableRowGroup());
-
+            TableRow headerRow = new TableRow();
+            table.RowGroups[0].Rows.Add(headerRow);
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Mano"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Cantidad Observada"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Probabilidad"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Probabilidad Esperada"))));
+            headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Resultado"))));
+            foreach (var cell in headerRow.Cells)
+            {
+                cell.BorderBrush = Brushes.Black;
+                cell.BorderThickness = new Thickness(1);
+            }
             foreach (var item in data)
             {
                 TableRow row = new TableRow();
                 table.RowGroups[0].Rows.Add(row);
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.Hand.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObservedQuantity.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Probability.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString()))));
-                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Result.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObservedQuantity.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Probability.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString("N5")))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Result.ToString("N5")))));
+                foreach (var cell in row.Cells)
+                {
+                    cell.BorderBrush = Brushes.Black;
+                    cell.BorderThickness = new Thickness(1);
+                }
             }
             document.Blocks.Add(table);
             return document;

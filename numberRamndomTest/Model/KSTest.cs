@@ -23,7 +23,7 @@ namespace ModelRandomTest
         {
             this.RiData = RiData;
             this.EstimationError = EstimationError;
-            this.NumberIntervals = NumberIntervals;
+            this.NumberIntervals = NumberIntervals <= 0 ? (int)Math.Ceiling(Math.Sqrt(RiData.Count)) : NumberIntervals;
         }
 
         public Dictionary<string, double> GetResults()
@@ -38,10 +38,6 @@ namespace ModelRandomTest
         {
             double minData = RiData.Min();
             double maxData = RiData.Max();
-            if (NumberIntervals <= 0)
-            {
-                NumberIntervals = (int)Math.Ceiling((3.5 * Statistics.StandardDeviation(RiData)) / Math.Cbrt(RiData.Count));
-            }
             ResultData.Add("Cantidad de datos: ", RiData.Count);
             ResultData.Add("Cantidad de intervalos: ", NumberIntervals);
             ResultData.Add("Dato minimo: ", minData);
@@ -55,7 +51,7 @@ namespace ModelRandomTest
             List<double> ExpectedCumulativeProbability = CalculateExpectedCumulativeProbability(ExpectedCumulativeFrequency);
             List<double> ObservedDifference = CalculateObservedDifference(ExpectedCumulativeProbability, cumulativeProbability);
 
-            int count = 0;
+            int count = 1;
             for (int i = 0; i < cumulativeFrecuency.Count; i++)
             {
                 KeyValuePair<Tuple<double, double>, int> par = IntervalFrecuency.ElementAt(i);

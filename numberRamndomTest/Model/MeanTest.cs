@@ -14,10 +14,8 @@ namespace ModelRandomTest
         Dictionary<string, double> ResultData = new Dictionary<string, double>();
         double EstimationError;
         public MeanTest(List<double> RiData, double EstimationError) {
-            Console.WriteLine("Cantidad de dato00s " + RiData.Count);
             this.RiData = RiData;
             this.EstimationError = EstimationError;
-
         }
         public Dictionary<string, double> GetResults()
         {
