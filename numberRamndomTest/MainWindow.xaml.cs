@@ -170,6 +170,9 @@ namespace numberRamndomTest
                     }else if(count == 3 && condition.Value)
                     {
                         document = CreateTableKs(9, controller.GetTableKS(), document);
+                    }else if (count == 4 && condition.Value)
+                    {
+                        document = CreateTablePoker(5, controller.GetTablePoker(), document);
                     }
                 }
                 count++;
@@ -246,6 +249,30 @@ namespace numberRamndomTest
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.AcomulatedExpectedFrequency.ToString()))));
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString()))));
                 row.Cells.Add(new TableCell(new Paragraph(new Run(item.Difference.ToString()))));
+            }
+            document.Blocks.Add(table);
+            return document;
+        }
+        private FlowDocument CreateTablePoker(int numColumns, ObservableCollection<FormatTablePoker> data, FlowDocument document)
+        {
+            Table table = new Table();
+            for (int i = 0; i < numColumns; i++)
+            {
+                TableColumn column = new TableColumn();
+                table.Columns.Add(column);
+            }
+
+            table.RowGroups.Add(new TableRowGroup());
+
+            foreach (var item in data)
+            {
+                TableRow row = new TableRow();
+                table.RowGroups[0].Rows.Add(row);
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Hand.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ObservedQuantity.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Probability.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.ExpectedProbability.ToString()))));
+                row.Cells.Add(new TableCell(new Paragraph(new Run(item.Result.ToString()))));
             }
             document.Blocks.Add(table);
             return document;

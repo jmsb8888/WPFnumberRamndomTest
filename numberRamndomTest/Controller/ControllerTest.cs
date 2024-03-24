@@ -22,6 +22,7 @@ namespace numberRamndomTest.Controller
         Dictionary<string, double> results;
         ObservableCollection<FormatTableChiSquare> formatTableChiSquare;
         ObservableCollection<FormatTableKS> FormatTableKs;
+        ObservableCollection<FormatTablePoker> TablePoker;
         public ControllerTest(string filePath, double EstimationError,int IntervalQuantity)
         {
             this.filePath = filePath;
@@ -45,6 +46,10 @@ namespace numberRamndomTest.Controller
         public ObservableCollection<FormatTableKS> GetTableKS()
         {
             return this.FormatTableKs;
+        }
+        public ObservableCollection<FormatTablePoker> GetTablePoker()
+        {
+            return this.TablePoker;
         }
         private List<double> CreateCsvFile()
         {
@@ -125,7 +130,8 @@ namespace numberRamndomTest.Controller
             try
             {
                 Boolean result = pokerTest.TestPoker();
-                results = meanTest.GetResults();
+                results = pokerTest.GetResults();
+                TablePoker = pokerTest.GetTablePoker();
                 return result;
             }
             catch (Exception ex)

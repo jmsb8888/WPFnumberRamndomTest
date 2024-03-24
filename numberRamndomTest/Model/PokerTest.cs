@@ -1,6 +1,8 @@
 ﻿using MathNet.Numerics.Distributions;
+using numberRamndomTest.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ namespace ModelRandomTest
         List<double> RiData = new List<double>();
         double EstimationError;
         Dictionary<string, double> ResultData = new Dictionary<string, double>();
+        ObservableCollection<FormatTablePoker> formatTablePokers = new ObservableCollection<FormatTablePoker>();
         public PokerTest(List<double> RiData, double EstimationError)
         {
             this.RiData = RiData;
@@ -21,23 +24,37 @@ namespace ModelRandomTest
         {
             return this.ResultData;
         }
+        public ObservableCollection<FormatTablePoker> GetTablePoker()
+        {
+            return this.formatTablePokers;
+        }
         public Boolean TestPoker()
         {
             Console.WriteLine("Cantidad de datos en prueba 1" + RiData.Count);
-
+            ResultData.Add("Cantidad de datos: ", RiData.Count);
             List<string> stringNumbers = RiData.Select(x => x.ToString("F5")).ToList();
             List<int> listOfResults = CalculateHand(stringNumbers);
             List<double> Ei = CalculateEi();
             List<double> operation = CalculateOperation(Ei, listOfResults);
-            /*foreach (var stringNumber in stringNumbers)
+            double[] probabilities = [0.3024, 0.504, 0.108, 0.072, 0.009, 0.0045, 0.0001];
+            string[] hands = ["Todos diferentes", "Un Par", "Dos Pares", "Una Tercia", "Una Terca Y Un Par", "4 Cartas Iguales", "5 Cartas Iguales"];
+            for (int i = 0; i < listOfResults.Count; i++)
             {
-                Console.WriteLine($"{stringNumber}");
-            }*/
+                FormatTablePoker poker = new FormatTablePoker
+                {
+                    Hand = hands[i],
+                    ObservedQuantity = listOfResults[i],
+                    Probability = probabilities[i],
+                    ExpectedProbability = Ei[i],
+                    Result = operation[i]
+                };
+                formatTablePokers.Add(poker);
+            }
             double ErrorsSum = operation.Sum();
             double valueChi = ChiSquared.InvCDF(6, 1 - EstimationError);
-            Console.WriteLine($"suma {ErrorsSum} valor inverso {valueChi}");
+            ResultData.Add("Error total: ", ErrorsSum);
+            ResultData.Add("Valor Chi2 Imverso: ", valueChi);
             Boolean isValid = ErrorsSum<= valueChi;
-            Console.WriteLine($"Es valido: {isValid}");
             return isValid;
         }
 
@@ -84,12 +101,6 @@ namespace ModelRandomTest
                         }
                     }
                 }
-                /* Console.WriteLine($"--NoRepite: {NoRepite}");
-                 Console.WriteLine($"--OnePar: {OnePar}");
-                 Console.WriteLine($"--TwoPar: {TwoPar}");
-                 Console.WriteLine($"--Onetrhee: {Onetrhee}");
-                 Console.WriteLine($"--OneFour: {OneFour}");
-                 Console.WriteLine($"--OneFive: {OneFive}");*/
                 if (OnePar != 0 && Onetrhee != 0)
                 {
                     listOfResults[4]++;
@@ -106,17 +117,6 @@ namespace ModelRandomTest
                     listOfResults[5] += OneFour;
                     listOfResults[6] += OneFive;
                 }
-                //Console.WriteLine($"number {number} counts {counts[number]}");
-                /*foreach (var kvp in repits)
-                {
-                    Console.WriteLine($"Clave: {kvp.Key}, Valor: {kvp.Value}");
-                }*/
-                /*Console.WriteLine($"NoRepite: {NoRepite}");
-                Console.WriteLine($"OnePar: {OnePar}");
-                Console.WriteLine($"TwoPar: {TwoPar}");
-                Console.WriteLine($"Onetrhee: {Onetrhee}");
-                Console.WriteLine($"OneFour: {OneFour}");
-                Console.WriteLine($"OneFive: {OneFive}");*/
             }
             foreach (var kvp in listOfResults)
             {
@@ -129,10 +129,10 @@ namespace ModelRandomTest
         private List<double> CalculateEi()
         {
             double AllDifferent = 0.3024;
-            double OnePair = 0.504;
-            double TwoPair = 0.108;
-            double ThreeOfAKind = 0.072;
-            double FullHouse = 0.009;
+            double OnePair = 0.5040;
+            double TwoPair = 0.1080;
+            double ThreeOfAKind = 0.0720;
+            double FullHouse = 0.0090;
             double FourOfAKind = 0.0045;
             double FiveOfAKind = 0.0001;
             List<double> Ei = new List<double>
@@ -145,10 +145,6 @@ namespace ModelRandomTest
                 FourOfAKind * RiData.Count,
                 FiveOfAKind * RiData.Count
             };
-            foreach (double result in Ei)
-            {
-                Console.WriteLine(result);
-            }
             return Ei;
         }
         private List<double> CalculateOperation(List<double> Ei, List<int> listOfResults)
