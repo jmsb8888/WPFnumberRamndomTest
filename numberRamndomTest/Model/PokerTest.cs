@@ -63,8 +63,7 @@ namespace ModelRandomTest
             List<int> listOfResults = new List<int>(new int[7]);
             foreach (string number in stringNumbers)
             {
-                string decimalPart = number.Substring(2);
-                Console.WriteLine($"parte decimal {decimalPart}");
+                string decimalPart = number.Contains(".") ? number.Substring(number.IndexOf(".") + 1) : "00000";
                 int allDifferent = 0;
                 int OnePar = 0;
                 int TwoPar = 0;

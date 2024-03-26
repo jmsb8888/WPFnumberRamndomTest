@@ -45,7 +45,7 @@ namespace ModelRandomTest
             double ErrorChiSquarer = ChiSquared.InvCDF(numberIntervals - 1, 1 - EstimationError);
             ResultData.Add("ErrorChiSquarer total CHI2: ", resultChiSquarer);
             ResultData.Add("Valor de CHI inv: ", ErrorChiSquarer);
-            Boolean isValid = ErrorChiSquarer >= ErrorChiSquarer;
+            Boolean isValid = ErrorChiSquarer > resultChiSquarer ;
             return isValid;
         }
         private List<Tuple<double, double>> CreateIntervals(double minData, double maxData, int numberOfIntervals)
