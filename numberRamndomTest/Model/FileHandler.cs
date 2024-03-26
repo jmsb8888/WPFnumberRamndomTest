@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using NotVisualBasic.FileIO;
+using numberRamndomTest.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -38,6 +39,35 @@ namespace ModelRandomTest
                         double aux = double.Parse(s, CultureInfo.InvariantCulture);
                         data.Add(aux);
                     }
+                }
+            }
+
+            return data;
+        }
+
+        public List<ModelKS> ReadKsTableCsv()
+        {
+            List<ModelKS> data = new List<ModelKS>();
+            using (TextFieldParser parser = new TextFieldParser(this.filePath))
+            {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(";");
+                while (!parser.EndOfData)
+                {
+                    string[] row = parser.ReadFields();
+                    ModelKS aux = new ModelKS
+                    {
+                        Quantity = double.Parse(row[0]),
+                        Error020 = double.Parse(row[1]),
+                        Error010 = double.Parse(row[2]),
+                        Error005 = double.Parse(row[3]),
+                        Error002 = double.Parse(row[4]),
+                        Error001 = double.Parse(row[5]),
+                        Error0005 = double.Parse(row[6]),
+                        Error0002 = double.Parse(row[7]),
+                        Error0001 = double.Parse(row[8])
+                    };
+                    data.Add(aux);     
                 }
             }
 

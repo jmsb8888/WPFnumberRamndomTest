@@ -24,6 +24,7 @@ namespace ModelRandomTest
             this.RiData = RiData;
             this.EstimationError = EstimationError;
             this.numberIntervals = numberIntervals <= 0 ? (int)Math.Ceiling(Math.Sqrt(RiData.Count)) : numberIntervals;
+            this.numberIntervals = this.numberIntervals >= 280 ? 280 : this.numberIntervals;
         }
         public Dictionary<string, double> GetResults()
         {

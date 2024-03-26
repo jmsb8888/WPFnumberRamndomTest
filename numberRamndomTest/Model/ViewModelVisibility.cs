@@ -109,5 +109,27 @@ namespace numberRamndomTest.Model
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        private int _rowHeightChiSquarer;
+        public int RowHeightChiSquarer
+        {
+            get { return _rowHeightChiSquarer; }
+            set
+            {
+                _rowHeightChiSquarer = value;
+                OnPropertyChanged("RowHeightChiSquarer");
+            }
+        }
+        private int _rowHeighKS;
+        public int RowHeightKS
+        {
+            get { return _rowHeighKS; }
+            set
+            {
+                _rowHeighKS = value;
+                OnPropertyChanged("RowHeightKS");
+            }
+        }
+
+
     }
 }

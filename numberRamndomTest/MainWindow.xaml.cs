@@ -19,6 +19,9 @@ using System.Windows.Shapes;
 using LiveCharts;
 using LiveCharts.Wpf;
 using System.Windows.Automation;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
+using System.Reflection;
 namespace numberRamndomTest
 {
     public partial class MainWindow : Window
@@ -31,6 +34,8 @@ namespace numberRamndomTest
         Boolean DoPokerTest = false;
         Boolean DoAllTest = false;
         Boolean isAddFile = false;
+        double ErrorEstemated = 0;
+        int IntervalsQuantity = 0;
         ViewModelVisibility viewModelVisibility = new ViewModelVisibility();
         public MainWindow()
         {
@@ -41,6 +46,9 @@ namespace numberRamndomTest
             viewModelVisibility.IsChiSquareVisible = ControlVisibility(DoChiSquareTest);
             viewModelVisibility.IsKsTestVisible = ControlVisibility(DoKSTest);
             viewModelVisibility.IsPokerVisible = ControlVisibility(DoPokerTest);
+            btnStart.IsEnabled = false;
+            CbxErrors.IsEnabled = false;
+            IntervalTextBox.IsEnabled = false;
             ActicateAndDeactivateAll();
         }
          private void ActicateAndDeactivateAll()
@@ -50,17 +58,76 @@ namespace numberRamndomTest
             btnCHI.IsEnabled = isAddFile;
             btnKS.IsEnabled = isAddFile;
             btnPoker.IsEnabled = isAddFile;
-            btnStart.IsEnabled = isAddFile;
             btnAll.IsEnabled = isAddFile;
+            CbxErrors.IsEnabled= isAddFile;
+            IntervalTextBox.IsEnabled= isAddFile;
 
         }
+        private void ActivateStart()
+        {
+            if (DoMeansTest || DoVarianceTest || DoChiSquareTest || DoKSTest || DoPokerTest)
+            {
+                btnStart.IsEnabled = true;
+            }
+            else
+            {
+                btnStart.IsEnabled = false;
+            }
+        }
+        private void AssignError(object sender, SelectionChangedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (comboBox.SelectedItem != null)
+            {
+                Border selectedBorder = (comboBox.SelectedItem as ComboBoxItem).Content as Border;
+                if (selectedBorder != null)
+                {
+                    TextBlock selectedTextBlock = selectedBorder.Child as TextBlock;
+                    if (selectedTextBlock != null)
+                    {
+                        string selectValue = selectedTextBlock.Text;
+                        if (!double.TryParse(selectValue, out double ErrorEstemated))
+                        {
+                            MessageBox.Show("El valor seleccionado no es un número válido.");
+                        }
+                    }
+                }
+            }
+        }
+        private void NumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void NumberTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (int.TryParse(textBox.Text, out int value))
+            {
+                if (value > 280)
+                {
+                    textBox.Text = "280";
+                }
+                this.IntervalsQuantity = value;
+            }
+            else
+            {
+                textBox.Text = "";
+            }
+        }
+
         private Visibility ControlVisibility(bool value)
         {
             return value ? Visibility.Visible : Visibility.Collapsed;
         }
         private void SetButtonState(Button button, bool isEnabled)
         {
-            button.Background = isEnabled ? Brushes.Green: null;
+            button.Background = isEnabled ? Brushes.Green: Brushes.Blue;
+        }
+        private void SetButtonEnabled(Button button, bool isEnabled)
+        {
+            button.IsEnabled = isEnabled;
         }
         private void Load_File(object sender, RoutedEventArgs e)
         {
@@ -74,6 +141,7 @@ namespace numberRamndomTest
                 MessageBox.Show($"Se seleccionó el archivo: {filePath}");
                 isAddFile = true;
                 ActicateAndDeactivateAll() ;
+                
             }
         }
       
@@ -82,6 +150,7 @@ namespace numberRamndomTest
            
             DoMeansTest = !DoMeansTest;
             SetButtonState(btnMeans, DoMeansTest);
+            ActivateStart();
 
         }
 
@@ -89,28 +158,34 @@ namespace numberRamndomTest
         {
             DoVarianceTest = !DoVarianceTest;
             SetButtonState(btnVar, DoVarianceTest);
-
+            ActivateStart();
         }
 
         private void Test_CHI_Square(object sender, RoutedEventArgs e)
         {
             DoChiSquareTest = !DoChiSquareTest;
             SetButtonState(btnCHI, DoChiSquareTest);
+            ActivateStart();
         }
 
         private void Test_KS(object sender, RoutedEventArgs e)
         {
             DoKSTest= !DoKSTest;
             SetButtonState(btnKS, DoKSTest);
+            ActivateStart();
         }
         private void Test_Poker(object sender, RoutedEventArgs e)
         {
             DoPokerTest= !DoPokerTest;
             SetButtonState(btnPoker, DoPokerTest);
+            ActivateStart();
         }
         private void All_Test(object sender, RoutedEventArgs e)
         {
             bool newValue = !DoAllTest;
+
+            DoAllTest = newValue;
+
             DoMeansTest = newValue;
             DoVarianceTest = newValue;
             DoChiSquareTest = newValue;
@@ -122,12 +197,13 @@ namespace numberRamndomTest
             SetButtonState(btnCHI, DoChiSquareTest);
             SetButtonState(btnKS, DoKSTest);
             SetButtonState(btnPoker, DoPokerTest);
-            SetButtonState(btnStart, isAddFile);
+            SetButtonState(btnAll, DoAllTest);
 
+            ActivateStart();
         }
         private void Start_Test(object sender, RoutedEventArgs e)
         {
-            ControllerTest controller = new ControllerTest(filePath, 0.05, 0);
+            ControllerTest controller = new ControllerTest(filePath, 0.05, 8);
             var tests = new Dictionary<string, Func<bool>>
                 {
                     { "DoMeansTest", () => controller.CreateMeanTest() },
@@ -150,8 +226,12 @@ namespace numberRamndomTest
             viewModelVisibility.IsChiSquareVisible = ControlVisibility(DoChiSquareTest);
             viewModelVisibility.IsKsTestVisible = ControlVisibility(DoKSTest);
             viewModelVisibility.IsPokerVisible = ControlVisibility(DoPokerTest);
-
-
+            viewModelVisibility.RowHeightChiSquarer = (DoChiSquareTest) ? 500 : 0;
+            viewModelVisibility.RowHeightKS = (DoKSTest) ? 500 : 0;
+            isAddFile = false;
+            btnLoad.IsEnabled = false;
+            ActicateAndDeactivateAll();
+            btnStart.IsEnabled = false;
             ExecuteTest(conditions, tests, controller);
         }
 
@@ -198,25 +278,15 @@ namespace numberRamndomTest
             titleParagraph.FontWeight = FontWeights.Bold;
             titleParagraph.FontSize = 25;
             rich.Document.Blocks.Add(titleParagraph);
-
             foreach (var pair in result)
             {
                 Paragraph paragraph = new Paragraph(new Run($"{pair.Key}: {pair.Value.ToString("N5", CultureInfo.InvariantCulture)}"));
                 paragraph.FontSize = 22;
                 rich.Document.Blocks.Add(paragraph);
             }
-
-            // Resultado de la prueba
             Paragraph resultParagraph = new Paragraph(new Run("Resultado de la prueba: " + resultTest));
             resultParagraph.FontSize = 22; 
             rich.Document.Blocks.Add(resultParagraph);
-
-            // Añadir espacios en blanco
-            for (int i = 0; i < 3; i++)
-            {
-                Paragraph blankParagraph = new Paragraph(new Run(""));
-                rich.Document.Blocks.Add(blankParagraph);
-            }
         }
         
         
@@ -269,6 +339,21 @@ namespace numberRamndomTest
         {
             viewModelVisibility.OnPropertyChanged(propertyOne);
             viewModelVisibility.OnPropertyChanged(propertyTwo);
+        }
+        private void RestartApplication(object sender, RoutedEventArgs e)
+        {
+
+            Close();
+            try
+            {
+                string exeName = Assembly.GetEntryAssembly().Location;
+                Process.Start(exeName);
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al reiniciar la aplicación: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

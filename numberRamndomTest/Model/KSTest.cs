@@ -3,11 +3,14 @@ using numberRamndomTest.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Documents;
 using System.Xml.Linq;
 
 namespace ModelRandomTest
@@ -19,11 +22,13 @@ namespace ModelRandomTest
         int NumberIntervals;
         Dictionary<string, double> ResultData = new Dictionary<string, double>();
         ObservableCollection<FormatTableKS> FormatTableKS = new ObservableCollection<FormatTableKS>();
+        
         public KSTest(List<double> RiData, double EstimationError, int NumberIntervals)
         {
             this.RiData = RiData;
             this.EstimationError = EstimationError;
             this.NumberIntervals = NumberIntervals <= 0 ? (int)Math.Ceiling(Math.Sqrt(RiData.Count)) : NumberIntervals;
+            this.NumberIntervals = this.NumberIntervals>=280 ? 280 : this.NumberIntervals;
         }
 
         public Dictionary<string, double> GetResults()
@@ -33,6 +38,46 @@ namespace ModelRandomTest
         public ObservableCollection<FormatTableKS> GetTableKS()
         {
             return this.FormatTableKS;
+        }
+        private double CalculateValueKS()
+        {
+            double value = 0;
+           
+            if ( this.RiData.Count > 0 && this.RiData.Count <= 50 )
+            {
+                /*string relativePath = @"../../../Resources/KSTable.csv";
+                string absolutePath = Path.GetFullPath(relativePath);
+                FileHandler read = new FileHandler(absolutePath);*/
+                var assembly = Assembly.GetExecutingAssembly();
+                var resourceName = "numberRamndomTest.Resources.KSTable.csv";
+
+                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                {
+                    var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "KSTable.csv");
+                    using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+                string pathh = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "KSTable.csv");
+                FileHandler read = new FileHandler(pathh);
+                List<ModelKS> modelKs = new List<ModelKS>();
+                modelKs = read.ReadKsTableCsv();
+                foreach ( ModelKS model in modelKs)
+                {
+                    if(model.Quantity == RiData.Count)
+                    {
+                        value = model.GetValue(EstimationError);
+                        break;
+                    }
+                }
+            }
+            else if( this.RiData.Count > 50)
+            {
+                ModelKS modelKs = new ModelKS();
+                value = modelKs.CalculateError(EstimationError, this.RiData.Count);
+            }
+            return value;
         }
         public Boolean testKS()
         {
@@ -71,9 +116,10 @@ namespace ModelRandomTest
                 FormatTableKS.Add(newRow);
             }
             double difMax = ObservedDifference.Max();
-            Boolean isValid = difMax < 0.18841;
+            double valueKS = CalculateValueKS();
+            Boolean isValid = difMax < valueKS;
             ResultData.Add("Error Maximo: ", difMax);
-            ResultData.Add("Valor KS: ", 0.18841);
+            ResultData.Add("Valor KS: ", valueKS);
             return isValid;
         }
         private List<Tuple<double, double>> CreateIntervals(double minData, double maxData, int numberOfIntervals)
