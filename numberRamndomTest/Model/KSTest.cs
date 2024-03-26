@@ -108,7 +108,7 @@ namespace ModelRandomTest
                     End = interval.Item2,
                     ObtainedFrequency = par.Value,
                     AcomulatedObtainedFrecuency = cumulativeFrecuency[i],
-                    ObtainedProbability = cumulativeFrecuency[i],
+                    ObtainedProbability = cumulativeProbability[i],
                     AcomulatedExpectedFrequency = ExpectedCumulativeFrequency[i],
                     ExpectedProbability = ExpectedCumulativeProbability[i],
                     Difference = ObservedDifference[i],
@@ -167,6 +167,7 @@ namespace ModelRandomTest
             List<double> cumulativeProbability = new List<double>();
             foreach (double frecuencyA in cumulativeFrecuency)
             {
+                
                 double aux = frecuencyA / (double)RiData.Count;
                 cumulativeProbability.Add(aux);
             }
