@@ -42,8 +42,8 @@ namespace ModelRandomTest
             ResultData.Add("Valor para X^2 de α/2: ", chiSquarer1);
             ResultData.Add("Valor para X^2 de 1-(α/2): ", chiSquarer2);
             ResultData.Add("Valor de z: ", zValue);
-            ResultData.Add("Limite inferior", lowerLimit);
-            ResultData.Add("Limite superior", upperLimit);
+            ResultData.Add("Límite inferior", lowerLimit);
+            ResultData.Add("Límite superior", upperLimit);
             return isValid;
         }
     }

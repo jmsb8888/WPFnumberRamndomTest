@@ -85,8 +85,8 @@ namespace ModelRandomTest
             double maxData = RiData.Max();
             ResultData.Add("Cantidad de datos: ", RiData.Count);
             ResultData.Add("Cantidad de intervalos: ", NumberIntervals);
-            ResultData.Add("Dato minimo: ", minData);
-            ResultData.Add("Dato Maximo: ", maxData );
+            ResultData.Add("Dato Mínimo: ", minData);
+            ResultData.Add("Dato Máximo: ", maxData );
             Dictionary<Tuple<double, double>, int> IntervalFrecuency;
             IntervalFrecuency = CalculateFrecuency(CreateIntervals(minData, maxData, NumberIntervals), NumberIntervals);
 
@@ -118,7 +118,7 @@ namespace ModelRandomTest
             double difMax = ObservedDifference.Max();
             double valueKS = CalculateValueKS();
             Boolean isValid = difMax < valueKS;
-            ResultData.Add("Error Maximo: ", difMax);
+            ResultData.Add("Error Máximo: ", difMax);
             ResultData.Add("Valor KS: ", valueKS);
             return isValid;
         }

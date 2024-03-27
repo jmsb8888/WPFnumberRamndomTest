@@ -43,7 +43,7 @@ namespace ModelRandomTest
             Dictionary<Tuple<double, double>, int> IntervalFrecuency = CalculateFrecuency(CreateIntervals(minData, maxData, numberIntervals), numberIntervals);
             double resultChiSquarer = calculateChiSquarer(IntervalFrecuency, numberIntervals);
             double ErrorChiSquarer = ChiSquared.InvCDF(numberIntervals - 1, 1 - EstimationError);
-            ResultData.Add("ErrorChiSquarer total CHI2: ", resultChiSquarer);
+            ResultData.Add("Error Total: ", resultChiSquarer);
             ResultData.Add("Valor de CHI inv: ", ErrorChiSquarer);
             Boolean isValid = ErrorChiSquarer > resultChiSquarer ;
             return isValid;

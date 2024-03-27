@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Height="Auto" Name="myGrid">
+        <Grid Height="Auto" Name="myGrid" Background="#F7EEDD" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.55*" />
                 <ColumnDefinition Width="5*" />
@@ -29,14 +29,14 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Button Content="Reiniciar &#xD;&#xA;Aplicación" Cursor="Hand" Grid.Column="0" HorizontalAlignment="Left" Margin="45,0,0,0" VerticalAlignment="Center" FontSize="15" Background="LightPink" Click="RestartApplication"/>
-            <ComboBox BorderBrush="Black" BorderThickness="1"  Cursor="Hand" Grid.Column="1" Grid.Row="0" SelectedIndex="2" Name="CbxErrors" HorizontalAlignment="Center" FontSize="15" Margin="10,41,0,0" VerticalAlignment="Top" Width="152" Height="32" SelectionChanged="AssignError"  RenderTransformOrigin="0.322,0.241">
+            <Button  Content=" Nueva&#xD;&#xA;Prueba" Cursor="Hand" Grid.Column="0" HorizontalAlignment="Left" Margin="43,0,0,0" VerticalAlignment="Center" FontSize="15" Background="LightPink" Click="RestartApplication" Width="92"/>
+            <ComboBox Background="#DDDDDD" BorderBrush="Black" BorderThickness="1"  Cursor="Hand" Grid.Column="1" Grid.Row="0" SelectedIndex="2" Name="CbxErrors" HorizontalAlignment="Center" FontSize="15" Margin="10,41,0,0" VerticalAlignment="Top" Width="152" Height="32" SelectionChanged="AssignError"  RenderTransformOrigin="0.322,0.241">
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="ComboBoxItem">
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ComboBoxItem">
-                                    <Border BorderBrush="Black" BorderThickness="0.5" Background="LightGray">
+                                    <Border BorderBrush="Black" BorderThickness="0.5" Background="#f7e1dd">
                                         <ContentPresenter />
                                     </Border>
                                 </ControlTemplate>
@@ -53,44 +53,44 @@
                 <ComboBoxItem>0.002</ComboBoxItem>
                 <ComboBoxItem>0.001</ComboBoxItem>
             </ComboBox>
-            <Label FontSize="15" Grid.Column="1" Grid.Row="0"  Content="Seleccionar CSV" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Height="26" Width="152"/>
-            <Label FontSize="15" Grid.Column="1" Grid.Row="0"  Content="Cantidad de&#xD;&#xA;intervalos" HorizontalAlignment="Right" Margin="0,-4,2,0" VerticalAlignment="Top" Height="55" Width="152"/>
-            <Label FontSize="15" Grid.Column="1"  Grid.Row="0" Content="Error máximo &#xD;&#xA;permitido" HorizontalAlignment="Center" Margin="10,-4,0,0" VerticalAlignment="Top" Height="55" Width="151"/>
-            <TextBox FontSize="15" Background="#DDDDDD" BorderBrush="Black" Grid.Row="0" BorderThickness="1" Grid.Column="1" Name="IntervalTextBox" PreviewTextInput="NumberTextBox_PreviewTextInput" TextChanged="NumberTextBox_TextChanged" HorizontalAlignment="Right" Margin="386,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="152" Height="32"/>
-            <Button FontSize="15"  Content="Cargar Archivo" Name="btnLoad" HorizontalAlignment="Left"  Height="32" Margin="11,41,0,0" VerticalAlignment="Top" Width="152"
+            <Label  FontSize="15" Grid.Column="1" Grid.Row="0"  Content="Seleccionar CSV" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Height="26" Width="152"/>
+            <Label  FontSize="15" Grid.Column="1" Grid.Row="0"  Content="Cantidad de&#xD;&#xA;intervalos" HorizontalAlignment="Right" Margin="0,-4,2,0" VerticalAlignment="Top" Height="55" Width="152"/>
+            <Label  FontSize="15" Grid.Column="1"  Grid.Row="0" Content="Error máximo &#xD;&#xA;permitido" HorizontalAlignment="Center" Margin="10,-4,0,0" VerticalAlignment="Top" Height="55" Width="151"/>
+            <TextBox FontSize="15" Background="#DDDDDD" BorderBrush="Black" Grid.Row="0" BorderThickness="1" Grid.Column="1" Name="IntervalTextBox" PreviewTextInput="NumberTextBox_PreviewTextInput" TextChanged="NumberTextBox_TextChanged" HorizontalAlignment="Right" Margin="386,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="152" Height="32" Text="8"/>
+            <Button Background="#DDDDDD" FontSize="15"  Content="Cargar Archivo" Name="btnLoad" HorizontalAlignment="Left"  Height="32" Margin="11,41,0,0" VerticalAlignment="Top" Width="152"
                    Click="Load_File"  Cursor="Hand" Grid.Column="1" Grid.Row="0"/>
 
 
-            <Button FontSize="15"  Grid.Column="0" Grid.Row="2" Content="Realizar Todas las&#xD;&#xA;Pruebas" Name="btnAll" HorizontalAlignment="Left" Height="44" Margin="13,0,0,0" VerticalAlignment="top" Width="152" Click="All_Test" />
-            <Button FontSize="15" Grid.Column="0"  Grid.Row="1"  Content="Prueba de Medias" Name="btnMeans" HorizontalAlignment="Left" Margin="13,16,0,0" VerticalAlignment="Top" Height="32" Width="152" RenderTransformOrigin="-0.177,0.052" Click="Test_Means" Cursor="Hand"/>
-            <Button FontSize="15" Grid.Column="0"   Grid.Row="1" Content="Prueba de Varianza" Name="btnVar" HorizontalAlignment="Left" Margin="13,54,0,0" VerticalAlignment="Top" Height="32" Width="152"  RenderTransformOrigin="-0.177,0.052" Click="Test_Variance" Cursor="Hand"/>
-            <Button FontSize="15" Grid.Column="0"   Grid.Row="1" Content="Prueba de CHi2" Name="btnCHI" HorizontalAlignment="Left" Margin="13,92,0,0" VerticalAlignment="Top" Height="32" Width="152"  RenderTransformOrigin="-0.177,0.052" Click="Test_CHI_Square" Cursor="Hand" />
-            <Button FontSize="15" Grid.Column="0"   Grid.Row="1" Content="Prueba KS" Name ="btnKS" HorizontalAlignment="Left" Margin="13,130,0,0" VerticalAlignment="Top" Height="32" Width="152"  RenderTransformOrigin="-0.177,0.052" Click="Test_KS"/>
-            <Button FontSize="15" Grid.Column="0"   Grid.Row="1" Content="Prueba de Poker" Name ="btnPoker" HorizontalAlignment="Left" Margin="13,168,0,0" VerticalAlignment="Top" Height="32" Width="152"  RenderTransformOrigin="-0.177,0.052" Click="Test_Poker" Cursor="Hand"/>
-            <Button FontSize="15" Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" Content="Iniciar Prueba" Name="btnStart" HorizontalAlignment="Center" Margin="10,62,0,0" Height="32" Width="152"  VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Start_Test" Cursor="Hand"/>
+            <Button Background="#DDDDDD"  FontSize="15"  Grid.Column="0" Grid.Row="2" Content="Realizar Todas las&#xD;&#xA;Pruebas" Name="btnAll" HorizontalAlignment="Left" Height="44" Margin="13,0,0,0" VerticalAlignment="top" Width="152" Click="All_Test" />
+            <Button Background="#DDDDDD"  FontSize="15" Grid.Column="0"  Grid.Row="1"  Content="Prueba de Medias" Name="btnMeans" HorizontalAlignment="Left" Margin="13,16,0,0" VerticalAlignment="Top" Height="32" Width="152" RenderTransformOrigin="-0.177,0.052" Click="Test_Means" Cursor="Hand"/>
+            <Button Background="#DDDDDD"  FontSize="15" Grid.Column="0"   Grid.Row="1" Content="Prueba de Varianza" Name="btnVar" HorizontalAlignment="Left" Margin="13,54,0,0" VerticalAlignment="Top" Height="32" Width="152"  RenderTransformOrigin="-0.177,0.052" Click="Test_Variance" Cursor="Hand"/>
+            <Button Background="#DDDDDD"  FontSize="15" Grid.Column="0"   Grid.Row="1" Content="Prueba de CHi2" Name="btnCHI" HorizontalAlignment="Left" Margin="13,92,0,0" VerticalAlignment="Top" Height="32" Width="152"  RenderTransformOrigin="-0.177,0.052" Click="Test_CHI_Square" Cursor="Hand" />
+            <Button Background="#DDDDDD"  FontSize="15" Grid.Column="0"   Grid.Row="1" Content="Prueba KS" Name ="btnKS" HorizontalAlignment="Left" Margin="13,130,0,0" VerticalAlignment="Top" Height="32" Width="152"  RenderTransformOrigin="-0.177,0.052" Click="Test_KS"/>
+            <Button Background="#DDDDDD"  FontSize="15" Grid.Column="0"   Grid.Row="1" Content="Prueba de Poker" Name ="btnPoker" HorizontalAlignment="Left" Margin="13,168,0,0" VerticalAlignment="Top" Height="32" Width="152"  RenderTransformOrigin="-0.177,0.052" Click="Test_Poker" Cursor="Hand"/>
+            <Button Background="#DDDDDD"  FontSize="15" Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="1" Content="Iniciar Prueba" Name="btnStart" HorizontalAlignment="Center" Margin="10,62,0,0" Height="32" Width="152"  VerticalAlignment="Top" RenderTransformOrigin="-0.177,0.052" Click="Start_Test" Cursor="Hand"/>
 
-            <RichTextBox x:Name="MeanTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="2"  HorizontalAlignment="Center"  VerticalAlignment="Top"
+            <RichTextBox Background="#ede4d3" x:Name="MeanTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="2"  HorizontalAlignment="Center"  VerticalAlignment="Top"
                       Visibility="{Binding IsMeanVisible}" Margin="0,34,0,0" >
                 <FlowDocument>
                     <Paragraph></Paragraph>
                 </FlowDocument>
             </RichTextBox>
 
-            <RichTextBox x:Name="VarianceTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="3"  HorizontalAlignment="Center"  VerticalAlignment="Top"
+            <RichTextBox Background="#ede4d3" x:Name="VarianceTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="3"  HorizontalAlignment="Center"  VerticalAlignment="Top"
                       Visibility="{Binding IsVarianceVisible}" Margin="0,2,0,0">
                 <FlowDocument>
                     <Paragraph></Paragraph>
                 </FlowDocument>
             </RichTextBox>
 
-            <RichTextBox x:Name="CHiSquareTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center"  VerticalAlignment="Center"
+            <RichTextBox Background="#ede4d3" x:Name="CHiSquareTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="4" HorizontalAlignment="Center"  VerticalAlignment="Center"
                       Visibility="{Binding IsChiSquareVisible}">
                 <FlowDocument>
                     <Paragraph></Paragraph>
                 </FlowDocument>
             </RichTextBox>
 
-            <DataGrid Grid.Column="1" Grid.Row="5" x:Name="Chi2Table" AutoGenerateColumns="False" Margin="10,10,10,10" Width="auto" Height="Auto" Visibility="{Binding IsChiSquareVisible}"
+            <DataGrid  Background="#ede4d3" Grid.Column="1" Grid.Row="5" x:Name="Chi2Table" AutoGenerateColumns="False" Margin="10,10,10,10" Width="auto" Height="Auto" Visibility="{Binding IsChiSquareVisible}"
                   IsReadOnly="True"  FontSize="18" ScrollViewer.CanContentScroll="False" >
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -119,18 +119,18 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <lvc:CartesianChart  Grid.Column="1" Grid.Row="6" Visibility="{Binding IsChiSquareVisible}" Width="auto" Height="auto" Series="{Binding ChartSeriesChiSquare}"
+            <lvc:CartesianChart Background="#ede4d3"  Grid.Column="1" Grid.Row="6" Visibility="{Binding IsChiSquareVisible}" Width="auto" Height="auto" Series="{Binding ChartSeriesChiSquare}"
                     LegendLocation="Right" Margin="10,17,0,18">
                 <lvc:CartesianChart.AxisX>
                     <lvc:Axis Title="Categorías"
-                  Labels="{Binding Intervals}" FontSize="15"/>
+                  Labels="{Binding Intervals}" FontSize="15" Foreground="Black"/>
                 </lvc:CartesianChart.AxisX>
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="Frecuencia" FontSize="15"/>
+                    <lvc:Axis Title="Frecuencia" FontSize="15" Foreground="Black"/>
                 </lvc:CartesianChart.AxisY>
             </lvc:CartesianChart>
 
-            <RichTextBox x:Name="KsTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="7" HorizontalAlignment="Center"  VerticalAlignment="Center"
+            <RichTextBox x:Name="KsTest" Background="#ede4d3" IsReadOnly="True"  Grid.Column="1" Grid.Row="7" HorizontalAlignment="Center"  VerticalAlignment="Center"
                       Visibility="{Binding IsKsTestVisible}">
                 <FlowDocument>
                     <Paragraph></Paragraph>
@@ -179,25 +179,24 @@
             </DataGrid>
 
 
-            <lvc:CartesianChart  Grid.Column="1" Grid.Row="9" Visibility="{Binding IsKsTestVisible}"  Width="auto" Height="{x:Static sys:Double.NaN}" Series="{Binding ChartSeriesKS}"
+            <lvc:CartesianChart Background="#ede4d3"  Grid.Column="1" Grid.Row="9" Visibility="{Binding IsKsTestVisible}"  Width="auto" Height="{x:Static sys:Double.NaN}" Series="{Binding ChartSeriesKS}"
             LegendLocation="Right" Margin="0,17,0,18">
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis Title="Categorías"
-        Labels="{Binding Intervals}" FontSize="15"/>
+                    <lvc:Axis Title="Categorías" Labels="{Binding Intervals}" FontSize="15" Foreground="Black"/>
                 </lvc:CartesianChart.AxisX>
                 <lvc:CartesianChart.AxisY >
-                    <lvc:Axis Title="Frecuencia"  FontSize="15" />
+                    <lvc:Axis Title="Frecuencia"  FontSize="15" Foreground="Black" />
                 </lvc:CartesianChart.AxisY>
             </lvc:CartesianChart>
 
-            <RichTextBox x:Name="PokerTest" IsReadOnly="True"  Grid.Column="1" Grid.Row="10" HorizontalAlignment="Center"  VerticalAlignment="Center"
+            <RichTextBox x:Name="PokerTest" Background="#ede4d3" IsReadOnly="True"  Grid.Column="1" Grid.Row="10" HorizontalAlignment="Center"  VerticalAlignment="Center"
                       Visibility="{Binding IsPokerVisible}">
                 <FlowDocument>
                     <Paragraph></Paragraph>
                 </FlowDocument>
             </RichTextBox>
 
-            <DataGrid Grid.Column="1" Grid.Row="11" x:Name="PokerTestTable" AutoGenerateColumns="False" Margin="10,10,10,10" Width="auto" Height="Auto" Visibility="{Binding IsPokerVisible}"
+            <DataGrid Grid.Column="1" Grid.Row="11" Background="#ede4d3" x:Name="PokerTestTable" AutoGenerateColumns="False" Margin="10,10,10,10" Width="auto" Height="Auto" Visibility="{Binding IsPokerVisible}"
                   IsReadOnly="True"  FontSize="18"  >
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="{x:Type DataGridColumnHeader}">

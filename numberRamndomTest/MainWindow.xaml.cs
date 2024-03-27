@@ -34,13 +34,15 @@ namespace numberRamndomTest
         Boolean DoPokerTest = false;
         Boolean DoAllTest = false;
         Boolean isAddFile = false;
-        double ErrorEstemated = 0;
+        double ErrorEstimated = 0;
         int IntervalsQuantity = 0;
         ViewModelVisibility viewModelVisibility = new ViewModelVisibility();
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = viewModelVisibility;
+            IntervalTextBox.IsEnabled = isAddFile;
+
             viewModelVisibility.IsMeanVisible = ControlVisibility(DoMeansTest);
             viewModelVisibility.IsVarianceVisible = ControlVisibility(DoVarianceTest);
             viewModelVisibility.IsChiSquareVisible = ControlVisibility(DoChiSquareTest);
@@ -62,6 +64,9 @@ namespace numberRamndomTest
             CbxErrors.IsEnabled= isAddFile;
             IntervalTextBox.IsEnabled= isAddFile;
 
+
+
+
         }
         private void ActivateStart()
         {
@@ -77,22 +82,17 @@ namespace numberRamndomTest
         private void AssignError(object sender, SelectionChangedEventArgs e)
         {
             var comboBox = sender as ComboBox;
+            double Error = 0;
             if (comboBox.SelectedItem != null)
             {
-                Border selectedBorder = (comboBox.SelectedItem as ComboBoxItem).Content as Border;
-                if (selectedBorder != null)
+                ComboBoxItem selectedItem = (ComboBoxItem)comboBox.SelectedItem;
+                string selectValue = selectedItem.Content.ToString().Trim();
+                if (!double.TryParse(selectValue, out Error))
                 {
-                    TextBlock selectedTextBlock = selectedBorder.Child as TextBlock;
-                    if (selectedTextBlock != null)
-                    {
-                        string selectValue = selectedTextBlock.Text;
-                        if (!double.TryParse(selectValue, out double ErrorEstemated))
-                        {
-                            MessageBox.Show("El valor seleccionado no es un número válido.");
-                        }
-                    }
+                    MessageBox.Show("El valor seleccionado no es un número válido.");
                 }
             }
+            this.ErrorEstimated = Error;
         }
         private void NumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -123,7 +123,9 @@ namespace numberRamndomTest
         }
         private void SetButtonState(Button button, bool isEnabled)
         {
-            button.Background = isEnabled ? Brushes.Green: Brushes.Blue;
+            Color DeactiveColor = (Color)ColorConverter.ConvertFromString("#DDDDDD");
+            Color activeColor = (Color)ColorConverter.ConvertFromString("#4a9d9c");
+            button.Background = isEnabled ? new SolidColorBrush(activeColor): new SolidColorBrush(DeactiveColor);
         }
         private void SetButtonEnabled(Button button, bool isEnabled)
         {
@@ -203,7 +205,9 @@ namespace numberRamndomTest
         }
         private void Start_Test(object sender, RoutedEventArgs e)
         {
-            ControllerTest controller = new ControllerTest(filePath, 0.05, 8);
+
+            ControllerTest controller = new ControllerTest(filePath, ErrorEstimated, IntervalsQuantity);
+            MessageBox.Show("intervalos" + IntervalsQuantity + " error " + ErrorEstimated);
             var tests = new Dictionary<string, Func<bool>>
                 {
                     { "DoMeansTest", () => controller.CreateMeanTest() },
@@ -247,22 +251,22 @@ namespace numberRamndomTest
                     bool result = testAction();
                     if (count == 0)
                     {
-                        PrintResult(condition.Key, controller, result, MeanTest);
+                        PrintResult("Prueba de Medias", controller, result, MeanTest);
                     }
                     else if (count == 1)
                     {
-                        PrintResult(condition.Key, controller, result, VarianceTest);
+                        PrintResult("Prueba de Varianzas", controller, result, VarianceTest);
                     }else if(count == 2 && condition.Value)
                     {
-                        PrintResult(condition.Key, controller, result, CHiSquareTest);
+                        PrintResult("Prueba de CHI Cuadrado", controller, result, CHiSquareTest);
                         CreateTableCHiSquare(controller.GetTableChiSquares());
                     }else if(count == 3 && condition.Value)
                     {
-                        PrintResult(condition.Key, controller, result, KsTest);
+                        PrintResult("Prueba KS", controller, result, KsTest);
                         CreateTableKs(controller.GetTableKS());
                     }else if (count == 4 && condition.Value)
                     {
-                        PrintResult(condition.Key, controller, result, PokerTest);
+                        PrintResult("Prueba de Poker", controller, result, PokerTest);
                         CreateTablePoker(controller.GetTablePoker());
                     }
                 }
@@ -280,7 +284,7 @@ namespace numberRamndomTest
             rich.Document.Blocks.Add(titleParagraph);
             foreach (var pair in result)
             {
-                Paragraph paragraph = new Paragraph(new Run($"{pair.Key}: {pair.Value.ToString("N5", CultureInfo.InvariantCulture)}"));
+                Paragraph paragraph = new Paragraph(new Run($"{pair.Key} {pair.Value.ToString("N5", CultureInfo.InvariantCulture)}"));
                 paragraph.FontSize = 22;
                 rich.Document.Blocks.Add(paragraph);
             }
@@ -343,17 +347,67 @@ namespace numberRamndomTest
         private void RestartApplication(object sender, RoutedEventArgs e)
         {
 
-            Close();
-            try
+            filePath = string.Empty;
+            DoMeansTest = false;
+            DoVarianceTest = false;
+            DoChiSquareTest = false;
+            DoKSTest = false;
+            DoPokerTest = false;
+            DoAllTest = false;
+            isAddFile = false;
+            ErrorEstimated = 0;
+            double selectedError = 0;
+            if (CbxErrors.SelectedItem != null)
             {
-                string exeName = Assembly.GetEntryAssembly().Location;
-                Process.Start(exeName);
-                Application.Current.Shutdown();
+                ComboBoxItem selectedItem = (ComboBoxItem)CbxErrors.SelectedItem;
+                string selectedValue = selectedItem.Content.ToString().Trim();
+                double.TryParse(selectedValue, out selectedError);
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error al reiniciar la aplicación: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                selectedError = 0.05;
             }
+            ErrorEstimated = selectedError;
+            IntervalsQuantity = 8;
+            IntervalTextBox.Text = IntervalsQuantity.ToString();
+            btnLoad.IsEnabled = true;
+            btnStart.IsEnabled = false;
+            btnMeans.IsEnabled = false;
+            btnVar.IsEnabled = false;
+            btnCHI.IsEnabled = false;
+            btnKS.IsEnabled = false;
+            btnPoker.IsEnabled = false;
+            btnAll.IsEnabled = false;
+            CbxErrors.IsEnabled = false;
+            IntervalTextBox.IsEnabled = false;
+            MeanTest.Document.Blocks.Clear();
+            VarianceTest.Document.Blocks.Clear();
+            CHiSquareTest.Document.Blocks.Clear();
+            KsTest.Document.Blocks.Clear();
+            PokerTest.Document.Blocks.Clear();
+            Chi2Table.ItemsSource = null;
+            KSTestTable.ItemsSource = null;
+            PokerTestTable.ItemsSource = null;
+            viewModelVisibility.ChartSeriesChiSquare.Clear();
+            viewModelVisibility.IntervalsChiSquare.Clear();
+            viewModelVisibility.ChartSeriesKS.Clear();
+            viewModelVisibility.IntervalsKs.Clear();
+            viewModelVisibility.IsMeanVisible = Visibility.Collapsed;
+            viewModelVisibility.IsVarianceVisible = Visibility.Collapsed;
+            viewModelVisibility.IsChiSquareVisible = Visibility.Collapsed;
+            viewModelVisibility.IsKsTestVisible = Visibility.Collapsed;
+            viewModelVisibility.IsPokerVisible = Visibility.Collapsed;
+            viewModelVisibility.RowHeightChiSquarer = 0;
+            viewModelVisibility.RowHeightKS = 0;
+
+            
+            ActicateAndDeactivateAll();
+            SetButtonState(btnMeans, false);
+            SetButtonState(btnVar, false);
+            SetButtonState(btnCHI, false);
+            SetButtonState(btnKS, false);
+            SetButtonState(btnPoker, false);
+            SetButtonState(btnAll, false);
         }
     }
 }

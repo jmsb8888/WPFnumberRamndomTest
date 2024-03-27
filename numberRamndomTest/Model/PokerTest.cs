@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ModelRandomTest
 {
@@ -37,7 +38,7 @@ namespace ModelRandomTest
             List<double> Ei = CalculateEi();
             List<double> operation = CalculateOperation(Ei, listOfResults);
             double[] probabilities = [0.3024, 0.504, 0.108, 0.072, 0.009, 0.0045, 0.0001];
-            string[] hands = ["Todos diferentes", "Un Par", "Dos Pares", "Una Tercia", "Una Terca Y Un Par", "4 Cartas Iguales", "5 Cartas Iguales"];
+            string[] hands = ["Todos diferentes", "Un Par", "Dos Pares", "Una Tercia", "Una Tercia Y Un Par", "4 Cartas Iguales", "5 Cartas Iguales"];
             for (int i = 0; i < listOfResults.Count; i++)
             {
                 FormatTablePoker poker = new FormatTablePoker
@@ -53,7 +54,7 @@ namespace ModelRandomTest
             double ErrorsSum = operation.Sum();
             double valueChi = ChiSquared.InvCDF(6, 1 - EstimationError);
             ResultData.Add("Error total: ", ErrorsSum);
-            ResultData.Add("Valor Chi2 Imverso: ", valueChi);
+            ResultData.Add("Valor Chi2 Inverso: ", valueChi);
             Boolean isValid = ErrorsSum<= valueChi;
             return isValid;
         }
@@ -78,6 +79,10 @@ namespace ModelRandomTest
                     count = decimalPart.Count(c => c == digit);
                     if (!individualResults.Contains((int)Char.GetNumericValue(digit)))
                     {
+                        /*if(count == 5)
+                        {
+                            MessageBox.Show("dato de 5 " + number);
+                        }*/
                         individualResults.Add((int)Char.GetNumericValue(digit));
                         switch (count)
                         {
@@ -117,10 +122,6 @@ namespace ModelRandomTest
                     listOfResults[5] += OneFour;
                     listOfResults[6] += OneFive;
                 }
-            }
-            foreach (var kvp in listOfResults)
-            {
-                Console.WriteLine($" Valor: {kvp}");
             }
             return listOfResults;
         }

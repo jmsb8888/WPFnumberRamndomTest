@@ -33,8 +33,8 @@ namespace ModelRandomTest
             ResultData.Add("Media de los datos: ",average);
             ResultData.Add("Valor para 1- (α/2): ", oneMinusMidpointAlphaValue);
             ResultData.Add("Valor de z: ",zValue);
-            ResultData.Add("Limite inferior",lowerLimit);
-            ResultData.Add("Limite superior",upperLimit);
+            ResultData.Add("Límite inferior",lowerLimit);
+            ResultData.Add("Límite superior",upperLimit);
             return isValid;
         }
     }
