@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace numberRamndomTest.Model
 {
+    //Formato de entrega de los resultados para la prueba de Poker
     class FormatTablePoker
     {
         public string Hand { get; set; } 

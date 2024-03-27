@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace numberRamndomTest.Model
 {
+    //Formato de entrega de los resultados para la prueba de chi cuadrado
     class FormatTableChiSquare: IFormatData
     {
         public int Index { get; set; }

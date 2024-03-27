@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace numberRamndomTest.Model
 {
+    //interfaz para implementacion de grafico
     interface IFormatData
     {
         int Index { get; }

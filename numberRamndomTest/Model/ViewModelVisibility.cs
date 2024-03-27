@@ -10,8 +10,10 @@ using LiveCharts.Wpf;
 
 namespace numberRamndomTest.Model
 {
+    //Implementa INotifyPropertyChanged para la actualización de la interfaz de usuario
     public class ViewModelVisibility : INotifyPropertyChanged
     {
+        // Propiedad para la visibilidad del test Chi cuadrado
         private Visibility _isCHiSquarerVisible = Visibility.Collapsed;
         public Visibility IsChiSquareVisible
         {
@@ -25,6 +27,7 @@ namespace numberRamndomTest.Model
                 }
             }
         }
+        // Propiedad para la visibilidad del test KS
         private Visibility _isKsTestVisible = Visibility.Collapsed;
         public Visibility IsKsTestVisible
         {
@@ -38,7 +41,7 @@ namespace numberRamndomTest.Model
                 }
             }
         }
-
+        // Propiedad para la visibilidad del test de Poker
         private Visibility _isPokerTestVisible = Visibility.Collapsed;
         public Visibility IsPokerVisible
         {
@@ -52,6 +55,7 @@ namespace numberRamndomTest.Model
                 }
             }
         }
+        // Propiedad para la visibilidad del test de media
         private Visibility _isMeanTestVisible = Visibility.Collapsed;
         public Visibility IsMeanVisible
         {
@@ -65,7 +69,7 @@ namespace numberRamndomTest.Model
                 }
             }
         }
-
+        // Propiedad para la visibilidad del test de varianza
         private Visibility _isVarianceTestVisible = Visibility.Collapsed;
         public Visibility IsVarianceVisible
         {
@@ -79,12 +83,12 @@ namespace numberRamndomTest.Model
                 }
             }
         }
-
+        // Colecciones para almacenar datos para gráficos
         public SeriesCollection ChartSeriesChiSquare { get; set; }
         public List<string> IntervalsChiSquare { get; set; }
         public SeriesCollection ChartSeriesKS { get; set; }
         public List<string> IntervalsKs { get; set; }
-
+        // Constructor de la clase ViewModelVisibility
         public ViewModelVisibility()
         {
             ChartSeriesChiSquare = new SeriesCollection();
@@ -92,23 +96,24 @@ namespace numberRamndomTest.Model
             ChartSeriesKS = new SeriesCollection();
             IntervalsKs = new List<string>();
         }
-       /* public void AddNewSeriesToChart(IEnumerable<int> newFrequencies, string seriesTitle)
-        {
-            var newSeries = new ColumnSeries
-            {
-                Title = seriesTitle,
-                Values = new ChartValues<int>(newFrequencies)
-            };
-            ChartSeriesChiSquare.Add(newSeries);
-            OnPropertyChanged(nameof(ChartSeriesChiSquare));
-        }*/
-
+        /* public void AddNewSeriesToChart(IEnumerable<int> newFrequencies, string seriesTitle)
+         {
+             var newSeries = new ColumnSeries
+             {
+                 Title = seriesTitle,
+                 Values = new ChartValues<int>(newFrequencies)
+             };
+             ChartSeriesChiSquare.Add(newSeries);
+             OnPropertyChanged(nameof(ChartSeriesChiSquare));
+         }*/
+        // Evento PropertyChanged para la notificación de cambios en las propiedades
         public event PropertyChangedEventHandler PropertyChanged;
 
         public virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        // Propiedades para la altura de las filas en la interfaz de usuario
         private int _rowHeightChiSquarer;
         public int RowHeightChiSquarer
         {
