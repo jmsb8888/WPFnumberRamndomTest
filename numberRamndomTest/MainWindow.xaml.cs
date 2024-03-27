@@ -233,7 +233,7 @@ namespace numberRamndomTest
             // Crear una instancia del controlador de prueba con la ruta del archivo, error estimado y cantidad de intervalos
             ControllerTest controller = new ControllerTest(filePath, ErrorEstimated, IntervalsQuantity);
 
-                           MessageBox.Show("intervalos" + IntervalsQuantity + " error " + ErrorEstimated);
+            //               MessageBox.Show("intervalos" + IntervalsQuantity + " error " + ErrorEstimated);
             // Diccionario que contiene las pruebas y las funciones asociadas a ellas
             var tests = new Dictionary<string, Func<bool>>
                 {
