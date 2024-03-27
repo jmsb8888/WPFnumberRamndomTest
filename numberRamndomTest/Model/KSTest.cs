@@ -84,7 +84,9 @@ namespace ModelRandomTest
                         break;
                     }
                 }
-            }//En caso de ser mas de 50 datos invoca el metodo que realiza la respectiva operación para determinar el valor ks según la cantidad de datos y el error estimado
+            }
+            //En caso de ser mas de 50 datos invoca el metodo que realiza la respectiva operación para
+            //determinar el valor ks según la cantidad de datos y el error estimado
             else if( this.RiData.Count > 50)
             {
                 ModelKS modelKs = new ModelKS();
@@ -217,7 +219,8 @@ namespace ModelRandomTest
             List<double> ExpectedCumulativeFrequency = new List<double>();
             //Ancho del intervalo
             double withIntervals= (double)RiData.Count / (double)NumberIntervals;
-            //Acomula la suma de los valores que se espera lleve la frecuencia acomulada, en cada intervalo, ademas los adiciona a la lista de resultados
+            //Acomula la suma de los valores que se espera lleve la frecuencia acomulada, en cada intervalo,
+            //ademas los adiciona a la lista de resultados
             double accumulator = 0;
             for (int i = 0; i < NumberIntervals; i++)
             {
@@ -231,7 +234,8 @@ namespace ModelRandomTest
         {
             //Lista de resultados
             List<double> ExpectedCumulativeProbability = new List<double>();
-            //Divide la frecuencia acomulada esperada en la cantidad de datos para determinar la probabilidad esperada y las va adicionando a la lista de resultados
+            //Divide la frecuencia acomulada esperada en la cantidad de datos para determinar la probabilidad esperada
+            //y las va adicionando a la lista de resultados
             foreach (double frecuency in ExpectedCumulativeFrequency)
             {
                 double aux = frecuency / (double)RiData.Count;

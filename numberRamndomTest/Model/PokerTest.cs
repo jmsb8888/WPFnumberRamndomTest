@@ -182,7 +182,8 @@ namespace ModelRandomTest
         {
             //resultados para el error
             List<double> operation = new List<double>();
-            //Para cada tipo de mano calcula la diferencia entre Ei y la cantidad de datos por mano y la eleva al cuadrado a continuación divide
+            //Para cada tipo de mano calcula la diferencia entre Ei y la cantidad de datos por mano
+            //y la eleva al cuadrado a continuación divide
             //en el valor de Ei
             for (int i = 0; i < Ei.Count; i++)
             {
