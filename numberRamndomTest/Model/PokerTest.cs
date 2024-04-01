@@ -132,11 +132,11 @@ namespace ModelRandomTest
                             TwoPar = 1;
                         }
                     }
-                }//revisa salveddades para cuando son 4 cartas iguales
+                }//revisa salveddades para cuando son 1 tercia y un par
                 if (OnePar != 0 && Onetrhee != 0)
                 {
                     listOfResults[4]++;
-                }//Revisa si todas las cartas fueron iguales
+                }//Revisa si todas las cartas fueron diferentes
                 else if (OnePar == 0 && TwoPar == 0 && Onetrhee == 0 && OneFour == 0 && OneFive == 0)
                 {
                     listOfResults[0]++;
